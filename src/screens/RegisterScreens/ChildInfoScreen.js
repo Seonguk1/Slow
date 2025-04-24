@@ -64,7 +64,7 @@ const InputBox = ({ label, placeholder }) => {
 const ChildInfoScreen = () => {
     const router = useRouter();
     return (
-        <View style={{ flex: 1, marginTop: 60 }}>
+        <View style={{ flex: 1, paddingTop: 60, backgroundColor:"#fff" }}>
             <TouchableOpacity style={{ marginBottom: 86 }}>
                 <Text
                     style={{
@@ -99,7 +99,10 @@ const ChildInfoScreen = () => {
             <InputBox label={"재학여부"} placeholder={"선택"} />
             <CustomButton
                 onPress={() => { router.push("/register/testResult") }}
-                style={{ alignSelf: "center", marginTop: 140 }} width={228} height={56} text={"계속하기"} />
+                style={{ alignSelf: "center", marginTop: 140 }} 
+                width={scaleWidth(228)} 
+                height={scaleHeight(56)} 
+                text={"계속하기"} />
         </View>
     )
 }

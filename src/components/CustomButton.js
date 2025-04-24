@@ -22,6 +22,7 @@ const CustomButton = ({width, height, text, onPress, style})=>{
                 color:"#FF8A65",
                 fontFamily:"HakgyoansimBareondotumB",
                 fontSize:20,
+                fontWeight: 700
 
             }}
             >

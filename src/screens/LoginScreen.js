@@ -2,7 +2,7 @@ import { Text, View, TextInput, TouchableOpacity } from "react-native";
 import { useState } from "react";
 import {scaleWidth, scaleHeight, scaleFont} from "../utils/responsive";
 import { LinearGradient } from 'expo-linear-gradient';
-import CheckBox from '@react-native-community/checkbox';
+
 
 
 const InputBox = ({ label, placeholder }) => {

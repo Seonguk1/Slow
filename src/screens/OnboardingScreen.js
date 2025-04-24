@@ -4,8 +4,7 @@ import { useState } from "react";
 import { PanResponder } from "react-native";
 import CustomButton from "../components/CustomButton";
 import { useRouter } from "expo-router";
-
-
+import { scaleWidth, scaleHeight, scaleFont } from "../utils/responsive";
 
 const indicatorSize = 8;
 
@@ -14,9 +13,9 @@ const OnboardingScreen = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const onboardingData = [
         { title: '혼자 고민하지 마세요', desc: '우리들의 느린학습자들을 위한\n든든한 동반자, 슬로우가 함께합니다' },
-        { title: '정보는 부족하고,\n양육은 막막하셨죠?', desc: '진단부터 양육까지,  방향을 잡아드립니다' },
+        { title: '정보는 부족하고,\n양육은 막막하셨죠?', desc: '진단부터 양육까지,  방향을 잡아드립니다.' },
         { title: '우리 아이에게 꼭 맞는 성장 콘텐츠', desc: '일상 루틴, 사회성 훈련\n맞춤형 부모 가이드까지 한 곳에.' },
-        { title: '지금부터 함께해요', desc: '아이도, 부모도 지치지 않도록\n느린 걸음에 맞춰 함께 걸어가요' },
+        { title: '지금부터 함께해요', desc: '아이도, 부모도 지치지 않도록\n느린 걸음에 맞춰 함께 걸어가요.' },
     ];
     const onboardingImage = [
         require(`../assets/images/onboarding_1.png`),
@@ -43,67 +42,109 @@ const OnboardingScreen = () => {
     });
 
     return (
-        <View style={{ flex: 1 }} {...panResponder.panHandlers}>
-            <View style={{ flex: 1, marginBottom: 100 }}>
-                <Image
-                    source={onboardingImage[currentIndex]}
-                    style={{
-                        width: "100%",
+        <View style={{ flex: 1, backgroundColor: "#fff" }} {...panResponder.panHandlers}>
 
-                    }}
-                />
-            </View>
-            <View style={{ flex: 1, margin: 20 }}>
-                <Text style={{ fontSize: 20, fontWeight: "bold", marginBottom: 15 }}>
-                    {onboardingData[currentIndex].title}
-                </Text>
-                <Text>
-                    {onboardingData[currentIndex].desc}
-                </Text>
-            </View>
-            { currentIndex <3 ? <View style={{ flexDirection: 'row', justifyContent: "space-between", marginHorizontal: 20, marginBottom: 50 }}>
-                <TouchableOpacity >
-                    <Text style={{ color: "#FF914D", fontWeight: "bold" }}>
-                        Skip
+            <Image
+                source={onboardingImage[currentIndex]}
+                style={{
+                    width: scaleWidth(414),
+                    height: scaleHeight(490),
+                    resizeMode: "stretch",
+                    marginBottom: 50,
+                }}
+            />
+            <View style={{ flex: 1, justifyContent: "space-between", marginBottom: 100 }}>
+                <View>
+                    <Text
+                        style={{
+                            fontFamily: "HakgyoansimBareondotumB",
+                            fontSize: scaleFont(25),
+                            color: "#37474F",
+                            fontWeight: 700,
+                            marginLeft: 30,
+                            marginBottom: 48,
+                        }}
+                    >
+                        {onboardingData[currentIndex].title}
                     </Text>
-                </TouchableOpacity>
-                <View style={{ flexDirection: "row" }}>
-                    {onboardingData.map((_, i) => (
-                        <View
-                            key={i}
-                            style={{
-                                height: i == currentIndex ? indicatorSize * 2 : indicatorSize,
-                                width: i == currentIndex ? indicatorSize * 2 : indicatorSize,
-                                borderRadius: 20,
-                                backgroundColor: '#FF914D',
-                                marginHorizontal: 4,
-
-                                alignSelf: "center",
-
-                            }}
-                        />
-                    ))}
+                    <Text style={{
+                        fontFamily: "HakgyoansimBareondotumR",
+                        fontSize: scaleFont(20),
+                        color: "#37474F",
+                        fontWeight: 400,
+                        marginLeft: 30,
+                        marginBottom: 0,
+                    }}>
+                        {onboardingData[currentIndex].desc}
+                    </Text>
                 </View>
-                <TouchableOpacity onPress={() => {
-                    setCurrentIndex(prev => Math.min(prev + 1, 3));
-                }}>
-                    <Text style={{ color: "#FF914D", fontWeight: "bold" }}>
-                        Next
-                    </Text>
-                </TouchableOpacity>
+                {currentIndex < 3 ?
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: "space-between",
+                            marginHorizontal: 25,
+                        }}
+                    >
+                        <TouchableOpacity >
+                            <Text
+                                style={{
+                                    fontFamily: "HakgyoansimBareondotumB",
+                                    color: "#FF914D",
+                                    fontWeight: 700,
+                                    fontSize: scaleFont(20)
+                                }}
+                            >
+                                Skip
+                            </Text>
+                        </TouchableOpacity>
+                        <View style={{ flexDirection: "row" }}>
+                            {onboardingData.map((_, i) => (
+                                <View
+                                    key={i}
+                                    style={{
+                                        height: i == currentIndex ? indicatorSize * 2 : indicatorSize,
+                                        width: i == currentIndex ? indicatorSize * 2 : indicatorSize,
+                                        borderRadius: 20,
+                                        backgroundColor: '#FF914D',
+                                        marginHorizontal: 4,
+
+                                        alignSelf: "center",
+
+                                    }}
+                                />
+                            ))}
+                        </View>
+                        <TouchableOpacity onPress={() => {
+                            setCurrentIndex(prev => Math.min(prev + 1, 3));
+                        }}>
+                            <Text
+                                style={{
+                                    fontFamily: "HakgyoansimBareondotumB",
+                                    color: "#FF914D",
+                                    fontWeight: 700,
+                                    fontSize: scaleFont(20)
+                                }}
+                            >
+                                Next
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                    :
+
+                    <CustomButton
+                        width={150}
+                        height={40}
+                        style={{alignSelf:"center"}}
+                        text="시작하기"
+                        onPress={() => {
+                            router.push("/register/childInfo")
+                        }}
+                    />
+
+
+                }
             </View>
-            :
-            <View style={{alignItems:"center", justifyContent:"center", marginBottom: 50}}>
-                <CustomButton
-                    width={150}
-                    height={40}
-                    text="시작하기"
-                    onPress={()=>{
-                        router.push("/register/childInfo")
-                    }}
-                />
-            </View>    
-        }
         </View>
 
     )

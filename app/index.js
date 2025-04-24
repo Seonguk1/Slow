@@ -1,10 +1,11 @@
 import * as Font from 'expo-font';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter, useRootNavigationState } from 'expo-router';
 
 export default function Index() {
   const router = useRouter();
   const navReady = useRootNavigationState();
+  const [fontsLoaded, setFontsLoaded] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -17,9 +18,9 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    if (!navReady?.key) return;
+    if (!navReady?.key || !fontsLoaded) return;
     router.replace('/intro');
-  }, [navReady]);
+  }, [navReady, fontsLoaded]);
 
   return null;
 }

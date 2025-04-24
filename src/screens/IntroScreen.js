@@ -23,7 +23,7 @@ const IntroScreen = () => {
                 </View>
             </View>
 
-            <Text style={[styles.title,{color:"#fff"}]}>WELCOME TO SLOW!</Text>
+            <Text style={[styles.title,{color:"#fff"}]}>SLOW</Text>
 
             <TouchableOpacity style={styles.button} onPress={() => router.push('/(auth)/onboarding')}>
                 <Text style={styles.buttonText}>Get started</Text>

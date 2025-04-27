@@ -1,31 +1,46 @@
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, usePathname } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { scaleWidth, scaleHeight, scaleFont } from "@/utils/responsive";
 
-CustomTabBar = () => {
+const CustomTabBar = () => {
   const router = useRouter();
+  const pathname = usePathname();
+
+  const TabButton = ({ name, route }) => {
+    const isFocused = pathname.startsWith(route);
+
+    return (
+      <TouchableOpacity
+        onPress={() => router.push(route)}
+        style={{ width: scaleWidth(50), alignItems: 'center' }}
+      >
+        <Ionicons
+          name={name}
+          size={isFocused ? scaleHeight(30) : scaleHeight(28)}
+          color={isFocused ? '#573353' : '#8F8F8F'} // 포커스 시 진한색
+        />
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => router.push('/home')}>
-        <Ionicons name="home-outline" size={28} color="#8F8F8F" />
-      </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push('/board/list')}>
-        <Ionicons name="list-outline" size={28} color="#8F8F8F" />
-      </TouchableOpacity>
+      <TabButton name="home-outline" route="/home" />
+
+      <TabButton name="list-outline" route="/board/list" />
+
 
       <TouchableOpacity style={styles.fabButton} onPress={() => router.push('/board/write')}>
-        <Ionicons name="add" size={32} color="white" />
+        <Ionicons name="add" size={scaleHeight(32)} color="white" />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push('/expert-guide/list')}>
-        <Ionicons name="documents-outline" size={28} color="#8F8F8F" />
-      </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => router.push('/search')}>
-        <Ionicons name="search-outline" size={28} color="#8F8F8F" />
-      </TouchableOpacity>
+      <TabButton name="documents-outline" route="/expert-guide/list" />
+
+      <TabButton name="search-outline" route="/search" />
+
     </View>
   );
 }
@@ -33,7 +48,7 @@ CustomTabBar = () => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    height: 70,
+    height: scaleHeight(70),
     backgroundColor: '#fff',
     justifyContent: 'space-around',
     alignItems: 'center',
@@ -43,8 +58,8 @@ const styles = StyleSheet.create({
     right: 0,
   },
   fabButton: {
-    width: 64,
-    height: 64,
+    width: scaleWidth(64),
+    height: scaleHeight(64),
     backgroundColor: '#FFA07A',  // 오렌지톤
     borderRadius: 32,
     justifyContent: 'center',

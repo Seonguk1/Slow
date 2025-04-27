@@ -1,8 +1,9 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { scaleWidth, scaleHeight, scaleFont } from "@/utils/responsive";
 import formatDate from "@/utils/formatDate";
+import Ionicons from '@expo/vector-icons/Ionicons';
 
-const ExpertGuideBox = ({ imageUrl, title, createdAt, onTitlePress }) => {
+const ExpertGuideBox = ({ imageUrl, title, lessonCount, createdAt, onTitlePress }) => {
 
     return (
         <View
@@ -67,14 +68,22 @@ const ExpertGuideBox = ({ imageUrl, title, createdAt, onTitlePress }) => {
                             }
                         ]}
                     >
-                        37 Lessons
+                        {lessonCount} Lessons
                     </Text>
                 </View>
-                <View>
-                    <Text>
-                        북마크
-                    </Text>
-                </View>
+                <TouchableOpacity
+                    style={{
+                        backgroundColor:"rgba(87, 51, 83, 0.1)",
+                        width:scaleWidth(32),
+                        height:scaleHeight(32),
+                        borderRadius:50,
+                        alignItems:"center",
+                        justifyContent:"center",
+                        marginRight:10
+                    }}
+                >
+                    <Ionicons name="bookmark-outline" size={20} color="#573353" />
+                </TouchableOpacity>
             </View>
         </View>
     )

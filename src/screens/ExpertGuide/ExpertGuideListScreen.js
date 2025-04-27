@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
-import useFetchExpertGuides from "../../hooks/useExpertGuide/useFetchExpertGuides";
 import BoardLayout from "../../layouts/BoardLayout"
 import LoadingView from "../../components/LoadingView";
 import { FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { scaleWidth, scaleHeight, scaleFont } from "@/utils/responsive";
 import { useRouter } from "expo-router";
 import ExpertGuideBox from "../../components/boxes/ExpertGuideBox";
+import { useFetchExpertGuides, useUpdateExpertGuide } from "@/hooks/useExpertGuide";
 
 
 const ExpertGuideListScreen = () => {
     const router = useRouter();
     const { fetchExpertGuides } = useFetchExpertGuides();
+    const { updateExpertGuide } = useUpdateExpertGuide();
     const [loading, setLoading] = useState(true);
     const [expertGuides, setExpertGuides] = useState([]);
 
@@ -32,18 +33,33 @@ const ExpertGuideListScreen = () => {
     if (loading)
         return (<LoadingView />)
 
-    const handlePress = (item) => {
-        router.push({
-            pathname: '/expert-guide/detail',
-            params: {
-                id: item.id,
-                title: item.title,
-                content: item.content,
-                imageUrl: item.imageUrl,
-                createdAt: item.createdAt
-            }
-        })
-    }
+    const handlePress = async (item) => {
+        try {
+            await updateExpertGuide(item.id, { lessonCount: item.lessonCount + 1 });
+
+            setExpertGuides(prev =>
+                prev.map(guide =>
+                    guide.id === item.id
+                        ? { ...guide, lessonCount: guide.lessonCount + 1 }
+                        : guide
+                )
+            );
+
+            router.push({
+                pathname: '/expert-guide/detail',
+                params: {
+                    id: item.id,
+                    title: item.title,
+                    content: item.content,
+                    imageUrl: item.imageUrl,
+                    createdAt: item.createdAt
+                }
+            });
+        } catch (error) {
+            console.error('Failed to update lessonCount:', error);
+        }
+    };
+
 
     return (
         <BoardLayout
@@ -57,6 +73,7 @@ const ExpertGuideListScreen = () => {
                         <ExpertGuideBox
                             imageUrl={item.imageUrl}
                             title={item.title}
+                            lessonCount={item.lessonCount}
                             createdAt={item.createdAt}
                             onTitlePress={() => { handlePress(item) }}
                         />

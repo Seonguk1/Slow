@@ -6,6 +6,7 @@ import PostBox from "../../components/boxes/PostBox";
 import { useRouter } from "expo-router";
 import BoardLayout from "../../layouts/BoardLayout";
 import LoadingView from "../../components/LoadingView";
+import formatDate from "../../utils/formatDate";
 
 const BoardListScreen = () => {
     const router = useRouter();
@@ -40,6 +41,7 @@ const BoardListScreen = () => {
                 title: item.title,
                 content: item.content,
                 author: item.author,
+                createdAt: formatDate(item.createdAt),
             },
         });
     };
@@ -57,6 +59,7 @@ const BoardListScreen = () => {
                             title={item.title}
                             content={item.content}
                             author={item.author}
+                            createdAt={item.createdAt}
                             onContentPress={() => { handlePress(item) }}
                         />
                     )

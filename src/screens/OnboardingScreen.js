@@ -86,7 +86,11 @@ const OnboardingScreen = () => {
                             marginHorizontal: 25,
                         }}
                     >
-                        <TouchableOpacity >
+                        <TouchableOpacity 
+                            onPress={()=>{
+                                router.push("/register/childInfo")
+                            }}
+                        >
                             <Text
                                 style={{
                                     fontFamily: "HakgyoansimBareondotumB",

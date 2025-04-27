@@ -1,5 +1,5 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import {scaleWidth, scaleHeight, scaleFont} from "../../utils/responsive";
+    import {scaleWidth, scaleHeight, scaleFont} from "../../utils/responsive";
 import { useRouter } from "expo-router";
 
 const CompletionScreen = () => {

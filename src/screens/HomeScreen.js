@@ -1,17 +1,20 @@
 import { Text, View, Image, TextInput, TouchableOpacity } from "react-native";
 import { useState } from "react";
-import {scaleWidth, scaleHeight, scaleFont} from "../utils/responsive";
+import { scaleWidth, scaleHeight, scaleFont } from "../utils/responsive";
 import { LinearGradient } from 'expo-linear-gradient';
 
 import profileIcon from '../assets/images/homeSubIcon.png';
 import arrowIcon from '../assets/images/tempHome.png';
 import babyIcon from '../assets/images/homeMainBaby.png';
 import parentIcon from '../assets/images/homeMainParent.png';
+import { useRouter } from "expo-router";
 
 
-const MainIconBox = ({ color, image, text})=>{
-    return(
-        <TouchableOpacity>
+const MainIconBox = ({ color, image, text, onPress }) => {
+    return (
+        <TouchableOpacity
+            onPress={onPress}
+        >
             <View style={{
                 backgroundColor: color,
                 width: scaleWidth(150),
@@ -26,11 +29,11 @@ const MainIconBox = ({ color, image, text})=>{
                     color: 'rgba(36, 60, 96, 1)',
                     fontSize: scaleFont(22),
                     fontWeight: 700,
-                    width:scaleWidth(130)
+                    width: scaleWidth(130)
                 }}>
                     {text}
                 </Text>
-                <Image source={image} style={{ width: scaleWidth(130), height: scaleHeight(107) }} resizeMode="contain"/>
+                <Image source={image} style={{ width: scaleWidth(130), height: scaleHeight(107) }} resizeMode="contain" />
             </View>
         </TouchableOpacity>
     )
@@ -52,8 +55,8 @@ const FooterIconBox = ({ color, frontimage, backimage, text, time }) => {
             }}>
                 <Image source={frontimage} style={{ width: scaleWidth(55), height: scaleHeight(55) }} resizeMode="contain" />
                 <View style={{ flex: 1, marginLeft: 15 }}>
-                <Text style={{ fontSize: scaleFont(16), fontWeight: '700', color: "rgba(36, 60, 96, 1)" }}>{text}</Text>
-                <Text style={{ fontSize: scaleFont(12), color: "rgba(36, 60, 96, 0.7)" }}>{time}</Text>
+                    <Text style={{ fontSize: scaleFont(16), fontWeight: '700', color: "rgba(36, 60, 96, 1)" }}>{text}</Text>
+                    <Text style={{ fontSize: scaleFont(12), color: "rgba(36, 60, 96, 0.7)" }}>{time}</Text>
                 </View>
                 <Image source={backimage} style={{ width: scaleWidth(44), height: scaleHeight(44) }} resizeMode="contain" />
             </View>
@@ -61,18 +64,19 @@ const FooterIconBox = ({ color, frontimage, backimage, text, time }) => {
     );
 }
 
-const HomeScreen = ()=>{
-    return(
+const HomeScreen = () => {
+    const router = useRouter();
+    return (
         <LinearGradient
-                colors={['#FFE59A', '#FF914D']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 0 }}
-                style={{
-                    width: scaleWidth(414),
-                    height: scaleHeight(847),
-                    alignItems: 'center',
-                    paddingTop: scaleHeight(49)
-                }}
+            colors={['#FFE59A', '#FF914D']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={{
+                width: scaleWidth(414),
+                height: scaleHeight(847),
+                alignItems: 'center',
+                paddingTop: scaleHeight(49)
+            }}
         >
             <Text style={{
                 color: "#FFF",
@@ -84,7 +88,7 @@ const HomeScreen = ()=>{
             </Text>
 
 
-            <Image source={require('../assets/images/tempHome.png')} style={{width: scaleWidth(89), height: scaleHeight(89)}} resizeMode="contain" />
+            <Image source={require('../assets/images/tempHome.png')} style={{ width: scaleWidth(89), height: scaleHeight(89) }} resizeMode="contain" />
 
 
             <View style={{
@@ -93,7 +97,7 @@ const HomeScreen = ()=>{
                 height: scaleHeight(650),
                 marginTop: 44,
                 borderTopLeftRadius: 50,
-                borderTopRightRadius: 50, 
+                borderTopRightRadius: 50,
                 alignItems: 'center'
             }}>
                 <View style={{
@@ -102,10 +106,19 @@ const HomeScreen = ()=>{
                     marginTop: 43,
                     width: scaleWidth(325)
                 }}>
-                    <MainIconBox color={'rgba(126, 238, 174, 1)'} image={babyIcon} text={"우리아이\n이해하기"}></MainIconBox>
-                    <MainIconBox color={'rgba(255, 234, 164, 1)'} image={parentIcon} text={"보호자\n커뮤니티"}></MainIconBox>
+                    <MainIconBox
+                        color={'rgba(126, 238, 174, 1)'}
+                        image={babyIcon}
+                        text={"우리아이\n이해하기"}
+                    />
+                    <MainIconBox
+                        color={'rgba(255, 234, 164, 1)'}
+                        image={parentIcon}
+                        text={"보호자\n커뮤니티"}
+                        onPress={()=>{router.push("/board/list")}}
+                    />
                 </View>
-            
+
 
                 <View style={{
                     width: scaleWidth(300),

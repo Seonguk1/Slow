@@ -1,4 +1,5 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
+# 기본 참고
+# Learn more: https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
 # dependencies
 node_modules/
@@ -9,30 +10,50 @@ dist/
 web-build/
 expo-env.d.ts
 
-# Native
+# Native build (bare workflow 대비)
 *.orig.*
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
+android/
+ios/
 
-# Metro
-.metro-health-check*
+# Metro cache
+.metro-cache/
+metro-cache/
+.metro-health-check/
 
-# debug
+# debug logs
 npm-debug.*
 yarn-debug.*
 yarn-error.*
 
-# macOS
+# macOS system files
 .DS_Store
+
+# certificates
 *.pem
 
-# local env files
+# environment files
+.env
+.env.*
 .env*.local
 
-# typescript
+# typescript build cache
 *.tsbuildinfo
 
-app-example
+# project specific
+app-example/
+firebase.json
+firestore.indexes.json
+firestore.rules
+storage.rules
+
+# optional: VSCode settings (개인 설정이라면 추가)
+.vscode/
+
+# optional: Firebase Emulator artifacts
+firebase-debug.log
+firestore_export/

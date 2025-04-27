@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { Text, TextInput, View } from "react-native";
-import {scaleWidth, scaleHeight, scaleFont} from "../utils/responsive";
+import { scaleWidth, scaleHeight, scaleFont } from "../../utils/responsive";
 
-const InputBox = ({ label, placeholder }) => {
-    const [value, setValue] = useState('');
+const InputBox = ({ label, placeholder, value, onChangeText }) => {
     return (
         <View style={{
             width: scaleWidth(317),
@@ -41,7 +39,7 @@ const InputBox = ({ label, placeholder }) => {
                 )}
                 <TextInput
                     value={value}
-                    onChangeText={setValue}
+                    onChangeText={onChangeText}
                     style={{
                         position: "absolute",
                         marginLeft: 20,

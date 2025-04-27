@@ -4,7 +4,7 @@ import CustomButton from "../../components/CustomButton";
 import { useState } from "react";
 import { useRouter } from "expo-router";
 import {scaleWidth, scaleHeight, scaleFont} from "../../utils/responsive";
-import InputBox from "../../components/InputBox";
+import InputBox from "../../components/boxes/InputBox";
 
 const ChildInfoScreen = () => {
     const router = useRouter();

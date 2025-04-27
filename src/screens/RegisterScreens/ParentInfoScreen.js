@@ -1,6 +1,6 @@
 import { Text, View, TouchableOpacity } from "react-native"
 import { scaleFont, scaleHeight, scaleWidth } from "../../utils/responsive";
-import InputBox from "../../components/InputBox";
+import InputBox from "../../components/boxes/InputBox";
 import CustomButton from "../../components/CustomButton";
 import { useRouter } from "expo-router";
 const ParentInfoScreen = () => {

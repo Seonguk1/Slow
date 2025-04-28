@@ -17,7 +17,6 @@ const IntroScreen = () => {
         >
 
             <View style={styles.logoContainer}>
-                {/* 로고 이미지 (원형 배경 + 아이콘) */}
                 <View style={styles.logoCircle}>
                     <Image source={require('../assets/images/icon.png')} style={styles.logoImage} />
                 </View>
@@ -25,7 +24,7 @@ const IntroScreen = () => {
 
             <Text style={[styles.title,{color:"#fff"}]}>SLOW</Text>
 
-            <TouchableOpacity style={styles.button} onPress={() => router.push('/(auth)/onboarding')}>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/login')}>
                 <Text style={styles.buttonText}>Get started</Text>
             </TouchableOpacity>
 

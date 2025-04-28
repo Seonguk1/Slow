@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, Alert } from "react-native";
 import { scaleWidth, scaleHeight, scaleFont } from "../../utils/responsive";
 import CustomButton from "../../components/CustomButton";
 import { useCreatePost } from "../../hooks/useBoard";
@@ -7,34 +7,46 @@ import { useState } from "react";
 import BoardLayout from "../../layouts/BoardLayout";
 import { useRouter } from "expo-router";
 import LoadingOverlay from '@/components/LoadingOverlay';
+import useUserInfo from "../../hooks/useUser/useUserInfo";
+import LoadingView from "../../components/LoadingView";
 
 const BoardWriteScreen = () => {
     const router = useRouter();
-    const { createPost } = useCreatePost();
-    const [loading, setLoading] = useState(false);
+    const { handleCreatePost } = useCreatePost();
     const [title, setTitle] = useState('');
     const [content, setContent] = useState('');
+    const [submitLoading, setSubmitLoading] = useState(false);
+    const {userInfo, userLoading} = useUserInfo();
 
-    const handlePress = async () => {
+
+    const handleSubmit = async () => {
         try {
-            setLoading(true);
-            await createPost(title, content, '성욱');
+            setSubmitLoading(true); 
+            await handleCreatePost({
+                title,
+                content,
+                authorNickname: userInfo.nickname,
+                authorUid: userInfo.uid,
+              });
             setTitle('');
             setContent('');
-            router.push("/board/list");
+            router.replace("/board/list");
         } catch (error) {
             console.error('글쓰기 실패:', error);
             Alert.alert('오류', '글 작성에 실패했습니다. 다시 시도해 주세요.');
         } finally {
-            setLoading(false);
+            setSubmitLoading(false);
         }
     }
+
+    if(userLoading)
+        return <LoadingView/>
 
     return (
         <BoardLayout
             boardTitle={"글쓰기"}
         >
-            {loading && <LoadingOverlay />}
+            {submitLoading && <LoadingOverlay/>}
 
             <View
                 style={{
@@ -55,10 +67,10 @@ const BoardWriteScreen = () => {
                     onChangeText={setContent}
                 />
                 <CustomButton
-                    text={loading ? "작성 중..." : "글쓰기"}
-                    disabled={loading}
+                    text={submitLoading ? "작성 중..." : "글쓰기"}
+                    disabled={submitLoading}
                     width={scaleWidth(200)}
-                    onPress={handlePress}
+                    onPress={handleSubmit}
 
                 />
             </View>

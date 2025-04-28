@@ -3,7 +3,7 @@ import { scaleWidth, scaleHeight, scaleFont } from "@/utils/responsive";
 import formatDate from "@/utils/formatDate";
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-const ExpertGuideBox = ({ imageUrl, title, lessonCount, createdAt, onTitlePress }) => {
+const ExpertGuideBox = ({ imageUrl, title, views, createdAt, onTitlePress }) => {
 
     return (
         <View
@@ -68,7 +68,7 @@ const ExpertGuideBox = ({ imageUrl, title, lessonCount, createdAt, onTitlePress 
                             }
                         ]}
                     >
-                        {lessonCount} Lessons
+                        {views} Lessons
                     </Text>
                 </View>
                 <TouchableOpacity

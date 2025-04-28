@@ -35,12 +35,12 @@ const ExpertGuideListScreen = () => {
 
     const handlePress = async (item) => {
         try {
-            await updateExpertGuide(item.id, { lessonCount: item.lessonCount + 1 });
+            await updateExpertGuide(item.id, { views: item.views + 1 });
 
             setExpertGuides(prev =>
                 prev.map(guide =>
                     guide.id === item.id
-                        ? { ...guide, lessonCount: guide.lessonCount + 1 }
+                        ? { ...guide, views: guide.views + 1 }
                         : guide
                 )
             );
@@ -56,7 +56,7 @@ const ExpertGuideListScreen = () => {
                 }
             });
         } catch (error) {
-            console.error('Failed to update lessonCount:', error);
+            console.error('Failed to update views:', error);
         }
     };
 
@@ -73,7 +73,7 @@ const ExpertGuideListScreen = () => {
                         <ExpertGuideBox
                             imageUrl={item.imageUrl}
                             title={item.title}
-                            lessonCount={item.lessonCount}
+                            views={item.views}
                             createdAt={item.createdAt}
                             onTitlePress={() => { handlePress(item) }}
                         />

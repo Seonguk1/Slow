@@ -1,10 +1,23 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { scaleWidth, scaleHeight, scaleFont } from "@/utils/responsive";
 import { useRouter } from "expo-router";
+import { signOut } from 'firebase/auth';
+import { auth } from '@/config/firebase';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
 const BoardLayout = ({ style, title, children }) => {
     const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+          await signOut(auth);
+          router.replace('/intro'); // 로그아웃하면 다시 인트로로
+        } catch (error) {
+          console.error(error);
+          alert('로그아웃 실패: ' + error.message);
+        }
+      };
+
     return (
         <View
             style={[
@@ -38,7 +51,7 @@ const BoardLayout = ({ style, title, children }) => {
                             height: scaleHeight(36)
                         }}
                     >
-                        <AntDesign name="arrowleft" size={18} color="#573353" />
+                        <AntDesign name="arrowleft" size={18    } color="#573353" />
                     </View>
                 </TouchableOpacity>
                 <Text
@@ -51,21 +64,20 @@ const BoardLayout = ({ style, title, children }) => {
                 >
                     {title}
                 </Text>
+
                 <TouchableOpacity
-                    onPress={() => { router.push("/setting") }}
+                    style={{
+                        backgroundColor: "rgba(87, 51, 83, 0.1)",
+                        borderRadius: 50,
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: scaleWidth(36),
+                        height: scaleHeight(36)
+                    }}
+                    onPress={handleLogout}
                 >
-                    <View
-                        style={{
-                            backgroundColor: "rgba(87, 51, 83, 0.1)",
-                            borderRadius: 50,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            width: scaleWidth(36),
-                            height: scaleHeight(36)
-                        }}
-                    >
-                        <AntDesign name="setting" size={20} color="#573353" />
-                    </View>
+                    <AntDesign name="logout" size={20} color="#573353" />
+
                 </TouchableOpacity>
             </View>
             {children}

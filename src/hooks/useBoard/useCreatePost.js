@@ -1,18 +1,18 @@
-import { useAddDocument } from '@/hooks/firestore';
+import createPost from "@/api/posts";
 
 const useCreatePost = () => {
-  const { addDocument } = useAddDocument('posts'); // 'posts' 컬렉션 고정
+  //추가 함수 생길 수 있기 때문에 훅으로 관리
 
-  const createPost = async (title, content, author) => {
-    const newPost = {
+  const handleCreatePost = async ({ title, content, authorNickname, authorUid }) => {
+    return await createPost({
       title,
       content,
-      author,
-    };
-    return await addDocument(newPost);
+      authorNickname,
+      authorUid,
+    });
   };
 
-  return { createPost };
+  return { handleCreatePost };
 };
 
 export default useCreatePost;

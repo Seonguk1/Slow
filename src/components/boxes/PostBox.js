@@ -3,7 +3,17 @@ import { scaleWidth, scaleHeight, scaleFont } from "@/utils/responsive";
 import Feather from '@expo/vector-icons/Feather';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import timeAgo from "../../utils/timeAgo";
-const PostBox = ({ title, content, author, createdAt, onContentPress }) => {
+const PostBox = ({
+    title,
+    content,
+    authorNickname,
+    createdAt,
+    likes,
+    comments,
+    views,
+    shares,
+    onContentPress,
+}) => {
     return (
         <View
             style={{
@@ -43,11 +53,11 @@ const PostBox = ({ title, content, author, createdAt, onContentPress }) => {
 
                         <View style={{
                             flexDirection: "row",
-                            justifyContent:"center",
-                            alignItems:"center"
+                            justifyContent: "center",
+                            alignItems: "center"
                         }}
                         >
-                            <Text style={[styles.text, { fontSize: scaleFont(12)}]}>{author}</Text>
+                            <Text style={[styles.text, { fontSize: scaleFont(12) }]}>{authorNickname}</Text>
                             <Text style={[styles.text, { fontSize: scaleFont(12), opacity: 0.5 }]}>{timeAgo(createdAt)}</Text>
                         </View>
                     </View>
@@ -80,9 +90,9 @@ const PostBox = ({ title, content, author, createdAt, onContentPress }) => {
                 <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
                     <Feather name="heart" size={15} color="black" />
 
-                    <Text> 1   </Text>
+                    <Text> {likes}   </Text>
                     <Feather name="message-circle" size={15} color="black" />
-                    <Text> 0</Text>
+                    <Text> {comments}</Text>
                 </View>
             </View>
         </View >

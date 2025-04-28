@@ -2,6 +2,7 @@ import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useRouter, usePathname } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { scaleWidth, scaleHeight, scaleFont } from "@/utils/responsive";
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const CustomTabBar = () => {
   const router = useRouter();
@@ -39,7 +40,7 @@ const CustomTabBar = () => {
 
       <TabButton name="documents-outline" route="/expert-guide/list" />
 
-      <TabButton name="search-outline" route="/search" />
+      <TabButton name="information-circle-outline" route="/profile" />
 
     </View>
   );

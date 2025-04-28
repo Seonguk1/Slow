@@ -1,14 +1,35 @@
-import { Text, View, TextInput, TouchableOpacity } from "react-native";
+import { Text, View, TextInput, TouchableOpacity, Alert } from "react-native";
 import { useState } from "react";
 import { scaleWidth, scaleHeight, scaleFont } from "../utils/responsive";
 import { LinearGradient } from 'expo-linear-gradient';
 import LoginInputBox from "../components/LoginInputBox";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/config/firebase";
+import { useRouter } from "expo-router";
+import LoadingOverlay from "../components/LoadingOverlay";
 
 const LoginScreen = () => {
+    const router = useRouter();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loading, setLoading] = useState(false);
+
+    const handleLogin = async () => {
+        setLoading(true); 
+        try {
+          await signInWithEmailAndPassword(auth, email, password);
+          router.replace('/home');
+        } catch (error) {
+          console.error(error);
+          Alert.alert('로그인 실패', error.message);
+        } finally {
+          setLoading(false); 
+        }
+      };
+
     return (
         <View style={{ flex: 1, backgroundColor: "white" }}>
+            {loading && <LoadingOverlay />}
             <LinearGradient
                 colors={['#FFF59D', '#FF8A65']}
                 start={{ x: 0, y: 0 }}
@@ -64,6 +85,7 @@ const LoginScreen = () => {
                     justifyContent: "center",
                     borderRadius: 8
                 }}
+                onPress={handleLogin}
             >
                 <Text
                     style={{

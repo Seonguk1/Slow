@@ -73,6 +73,9 @@ const BoardListScreen = () => {
             <FlatList
                 data={posts}
                 keyExtractor={(item) => item.id}
+                contentContainerStyle={{ paddingBottom: 100 }}
+                showsVerticalScrollIndicator={false}
+                style={{ flex: 1 }}
                 renderItem={({ item }) => {
                     return (
                         <PostBox

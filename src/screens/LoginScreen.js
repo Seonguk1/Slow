@@ -56,9 +56,7 @@ const LoginScreen = () => {
                 fontSize: scaleFont(20),
                 fontWeight: 700
             }}>
-                이메일과 비밀번호를
-                <br></br>
-                입력해주세요.
+                {"이메일과 비밀번호를\n입력해주세요."}
             </Text>
 
             <LoginInputBox

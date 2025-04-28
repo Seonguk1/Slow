@@ -79,7 +79,11 @@ const PostBox = ({
                 style={{ marginHorizontal: 15 }}
                 onPress={onContentPress}
             >
-                <Text style={styles.text}>
+                <Text
+                    style={styles.text}
+                    numberOfLines={2} 
+                    ellipsizeMode="tail"
+                >
                     {content}
                 </Text>
             </TouchableOpacity>

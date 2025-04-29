@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from 'rea
 import { useRouter } from 'expo-router'; // Expo Router 사용할 경우
 import styles from '../assets/styles';
 import { LinearGradient } from 'expo-linear-gradient';
+import SpaceBtn from '../components/buttons/SpaceBtn';
 
 
 const { width, height } = Dimensions.get('window');
@@ -24,9 +25,11 @@ const IntroScreen = () => {
 
             <Text style={[styles.title,{color:"#fff"}]}>SLOW</Text>
 
-            <TouchableOpacity style={styles.button} onPress={() => router.push('/login')}>
+            {/* <TouchableOpacity style={styles.button} onPress={() => router.push('/login')}>
                 <Text style={styles.buttonText}>Get started</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
+
+            <SpaceBtn onPress={() => router.push('/login')}/>
 
         </LinearGradient>
     );

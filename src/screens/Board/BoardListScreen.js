@@ -1,5 +1,5 @@
 import { View, Text, FlatList } from "react-native";
-import { scaleWidth, scaleHeight, scaleFont } from "../../utils/responsive";
+import { scaleWidth, scaleHeight, scaleFont } from "@/utils/responsive";
 import { useFetchPosts, useUpdatePost } from "../../hooks/useBoard";
 import { useEffect, useState } from "react";
 import PostBox from "../../components/boxes/PostBox";

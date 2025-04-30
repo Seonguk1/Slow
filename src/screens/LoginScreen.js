@@ -104,7 +104,7 @@ const LoginScreen = () => {
                 </Text>
             </View>
             <View style={{ marginTop: 100, width: scaleWidth(330), flexDirection: 'row', alignSelf: 'center', justifyContent: 'center', columnGap: 100 }}>
-                <TouchableOpacity>
+                <TouchableOpacity onPress={()=>{router.push("/register/signup")}}>
                     <Text style={{ fontSize: scaleFont(11), color: "#4F5558" }}>
                         {"회원가입"}
                     </Text>

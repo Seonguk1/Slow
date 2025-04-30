@@ -1,5 +1,5 @@
 import { View, Text, Alert } from "react-native";
-import { scaleWidth, scaleHeight, scaleFont } from "../../utils/responsive";
+import { scaleWidth, scaleHeight, scaleFont } from "@/utils/responsive";
 import CustomButton from "../../components/CustomButton";
 import { useCreatePost } from "../../hooks/useBoard";
 import InputBox from "@/components/boxes/InputBox";

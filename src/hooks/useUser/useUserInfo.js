@@ -33,7 +33,7 @@ const useUserInfo = ()=>{
         router.replace('/home');
       } finally {
         setUserLoading(false);
-      }
+      } 
     };
 
     fetchUserInfo();

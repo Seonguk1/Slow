@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Alert, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 import { useRouter } from "expo-router";
 import LoadingOverlay from "../../components/LoadingOverlay";
 import { createUserWithEmailAndPassword } from "firebase/auth";
@@ -39,6 +39,41 @@ const SignupScreen = () => {
                 return '알 수 없는 오류가 발생했습니다. 다시 시도해주세요.';
         }
     };
+
+    const [emailError, setEmailError] = useState('');
+    const [passwordError, setPasswordError] = useState('');
+    const [nicknameError, setNicknameError] = useState('');
+    const [isPasswordValid, setIsPasswordValid] = useState(false);
+    const handleEmailChange = (value) => {
+        setEmail(value);
+        setEmailError('')
+        if (!value) {
+            setEmailError('이메일을 입력해주세요.')
+        }
+    }
+    const handlePasswordChange = (value) => {
+        setPassword(value);
+        setPasswordError('')
+        setIsPasswordValid(false);
+        if (!value) {
+            setPasswordError('비밀번호를 입력해주세요.')
+        }
+        else if (
+            value.length < 8 ||
+            !/[a-zA-Z]/.test(value) ||   
+            !/\d/.test(value)            
+        ) {
+            setPasswordError('비밀번호는 최소 8자 이상, 영문과 숫자를 모두 포함해야 합니다.');
+        }
+        else{
+            setIsPasswordValid(true);
+            setPasswordError('가능한 비밀번호입니다.');
+        }
+    }
+
+    const handleNicknameChange = (value) => {
+
+    }
 
     const handleSubmit = async () => {
         try {
@@ -105,20 +140,73 @@ const SignupScreen = () => {
                     label="이메일"
                     placeholder="이메일을 입력하세요"
                     value={email}
-                    onChangeText={setEmail}
+                    onChangeText={handleEmailChange}
+                    onFocus={() => {
+                        if (!email) {
+                            setEmailError('이메일을 입력해주세요.');
+                        }
+                    }}
+                    onBlur={() => {
+                        if (!email) {
+                            setEmailError('');
+                        }
+                    }}
                 />
+                <Text style={styles.errorText}>{emailError}</Text>
+
                 <InputBox
                     label="비밀번호"
                     placeholder="내용을 입력하세요"
                     value={password}
-                    onChangeText={setPassword}
+                    onChangeText={handlePasswordChange}
+                    onFocus={() => {
+                        if (!password) {
+                            setPasswordError('비밀번호를 입력해주세요.');
+                        }
+                    }}
+                    onBlur={() => {
+                        if (!password) {
+                            setPasswordError('');
+                        }
+                    }}
                 />
+                <Text style={styles.errorText}>{passwordError}</Text>
+
+                <InputBox
+                    label="비밀번호 확인"
+                    placeholder="내용을 입력하세요"
+                    value={password}
+                    onChangeText={handlePasswordChange}
+                    onFocus={() => {
+                        if (!password) {
+                            setPasswordError('비밀번호를 입력해주세요.');
+                        }
+                    }}
+                    onBlur={() => {
+                        if (!password) {
+                            setPasswordError('');
+                        }
+                    }}
+                />
+
                 <InputBox
                     label="닉네임"
                     placeholder="닉네임을 입력하세요"
                     value={nickname}
-                    onChangeText={setNickname}
+                    onChangeText={handleNicknameChange}
+                    onFocus={() => {
+                        if (!nickname) {
+                            setNicknameError('닉네임을 입력해주세요.');
+                        }
+                    }}
+                    onBlur={() => {
+                        if (!nickname) {
+                            setNicknameError('');
+                        }
+                    }}
                 />
+                <Text style={styles.errorText}>{nicknameError}</Text>
+
                 {error &&
                     <Text
                         style={{
@@ -139,4 +227,13 @@ const SignupScreen = () => {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    errorText: {
+        color: "red",
+        alignSelf: "flex-start",
+        marginBottom: 10
+    }
+})
+
 export default SignupScreen;

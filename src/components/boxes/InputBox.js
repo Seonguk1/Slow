@@ -1,7 +1,7 @@
 import { Text, TextInput, View } from "react-native";
 import { scaleWidth, scaleHeight, scaleFont } from "../../utils/responsive";
 
-const InputBox = ({ label, placeholder, value, onChangeText }) => {
+const InputBox = ({ label, placeholder, value, onChangeText, onFocus, onBlur }) => {
     return (
         <View style={{
             width: scaleWidth(317),
@@ -40,6 +40,8 @@ const InputBox = ({ label, placeholder, value, onChangeText }) => {
                 <TextInput
                     value={value}
                     onChangeText={onChangeText}
+                    onFocus={onFocus}
+                    onBlur={onBlur}
                     style={{
                         position: "absolute",
                         marginLeft: 20,

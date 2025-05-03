@@ -2,7 +2,6 @@ import { StyleSheet, Text, View } from "react-native";
 import useUserInfo from "../../hooks/useUser/useUserInfo";
 import LoadingView from "../../components/LoadingView";
 import { scaleWidth, scaleHeight, scaleFont } from "@/utils/responsive";
-import Loader from "../../components/Loader";
 
 const MissionListScreen = () => {
     const { userInfo, userLoading } = useUserInfo();
@@ -20,7 +19,6 @@ const MissionListScreen = () => {
                 flexDirection: "row"
             }}>
 
-                <Loader />
                 <Text style={{
                     fontFamily: "HakgyoansimBareondotumB",
                     fontWeight: 700,

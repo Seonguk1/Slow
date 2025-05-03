@@ -8,7 +8,6 @@ import arrowIcon from '../assets/images/tempHome.png';
 import babyIcon from '../assets/images/homeMainBaby.png';
 import parentIcon from '../assets/images/homeMainParent.png';
 import { useRouter } from "expo-router";
-import Loader from "../components/Loader";
 
 
 const MainIconBox = ({ color, image, text, onPress }) => {
@@ -88,7 +87,7 @@ const HomeScreen = () => {
                 HOME
             </Text>
 
-            <Loader/>
+            
             <Image source={require('../assets/images/tempHome.png')} style={{ width: scaleWidth(89), height: scaleHeight(89) }} resizeMode="contain" />
 
 

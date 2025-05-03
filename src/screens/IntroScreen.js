@@ -1,9 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
+import { View, Text, Image, Dimensions, TouchableOpacity } from 'react-native';
 import { useRouter } from 'expo-router';
-import styles from '../assets/styles';
+import styles from '@/assets/styles';
 import { LinearGradient } from 'expo-linear-gradient';
-import SpaceBtn from '../components/buttons/SpaceBtn';
+
 
 
 const { width, height } = Dimensions.get('window');
@@ -23,13 +23,15 @@ const IntroScreen = () => {
                 </View>
             </View>
 
-            <Text style={[styles.title,{color:"#fff"}]}>SLOW</Text>
+            <Text style={[styles.title, { color: "#fff" }]}>SLOW</Text>
 
             {/* <TouchableOpacity style={styles.button} onPress={() => router.push('/login')}>
                 <Text style={styles.buttonText}>Get started</Text>
             </TouchableOpacity> */}
 
-            <SpaceBtn onPress={() => router.push('/login')}/>
+            <TouchableOpacity style={styles.button} onPress={() => router.push('/login')}>
+                <Text style={styles.buttonText}>Get started</Text>
+            </TouchableOpacity>
 
         </LinearGradient>
     );

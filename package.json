@@ -42,7 +42,8 @@
     "react-native-screens": "~4.10.0",
     "react-native-web": "^0.20.0",
     "react-native-webview": "13.13.5",
-    "styled-components": "^6.1.17"
+    "styled-components": "^6.1.17",
+    "@shopify/react-native-skia": "v2.0.0-next.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

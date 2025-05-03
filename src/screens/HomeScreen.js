@@ -110,6 +110,7 @@ const HomeScreen = () => {
                         color={'rgba(126, 238, 174, 1)'}
                         image={babyIcon}
                         text={"우리아이\n이해하기"}
+                        onPress={()=>{router.push("/test")}} //임시
                     />
                     <MainIconBox
                         color={'rgba(255, 234, 164, 1)'}

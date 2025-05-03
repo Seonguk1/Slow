@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
-import { useRouter } from 'expo-router'; // Expo Router 사용할 경우
+import { useRouter } from 'expo-router';
 import styles from '../assets/styles';
 import { LinearGradient } from 'expo-linear-gradient';
 import SpaceBtn from '../components/buttons/SpaceBtn';

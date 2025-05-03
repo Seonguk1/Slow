@@ -1,2 +1,2 @@
-import IntroScreen from "../../src/screens/IntroScreen";
+import IntroScreen from "@/screens/IntroScreen";
 export default IntroScreen;

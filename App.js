@@ -1,22 +1,23 @@
-import React from "react";
-import { Canvas, Circle, Group } from "@shopify/react-native-skia";
-import { View } from "react-native";
+import React from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-const App = () => {
-  const width = 256;
-  const height = 256;
-  const r = width * 0.33;
+import HomeScreen from './src/screens/HomeScreen';
+//import DetailScreen from './screens/DetailScreen';
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
   return (
-    
-    <Canvas style={{ width, height }}>
-      <Group blendMode="multiply">
-        <Circle cx={r} cy={r} r={r} color="cyan" />
-        <Circle cx={width - r} cy={r} r={r} color="magenta" />
-        <Circle cx={width / 2} cy={width - r} r={r} color="yellow" />
-      </Group>
-    </Canvas>
-    
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Home">
+        <Stack.Screen 
+          name="Home" 
+          component={HomeScreen} 
+          options={{ title: '홈 화면' }}
+        />
+        
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-};
-
-export default App;
+}

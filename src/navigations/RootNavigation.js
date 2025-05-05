@@ -38,6 +38,7 @@ const RootNavigator = () => (
       {/* <Stack.Screen name="Main" component={MainTabNavigator} /> */}
       <Stack.Screen name="Intro" component={IntroScreen} />
       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
 

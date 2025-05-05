@@ -4,7 +4,6 @@
     "slug": "little-step",
     "version": "1.0.0",
     "orientation": "portrait",
-    //"icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,21 +12,20 @@
     },
     "android": {
       "adaptiveIcon": {
-        //"foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.seonguk11.littlestep"
     },
     "web": {
       "bundler": "metro",
-      "output": "single",
-      //"favicon": "./assets/images/favicon.png"
+      "output": "single"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          //"image": "./assets/images/splash-icon.png",
+          "image": "./src/image/assets/react-logo.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"

@@ -1,43 +1,49 @@
-import React, { useEffect, forwardRef, useImperativeHandle, useRef } from "react";
-import { Skia, Canvas, Path, Circle, Group, useCanvasRef } from "@shopify/react-native-skia";
-import { SafeAreaView } from "react-native";
+import React from "react";
+import { Canvas, Path, Skia } from "@shopify/react-native-skia";
+import {
+  GestureHandlerRootView,
+  GestureDetector,
+  Gesture,
+} from "react-native-gesture-handler";
+import { useSharedValue } from "react-native-reanimated";
 
+export default function TestScreen() {
+  const pathValue = useSharedValue(Skia.Path.Make());
 
-const TestScreen = () => {
-    const canvasRef = useCanvasRef();
-    const activePath = useRef(Skia.Path.Make());
-    const width = 256;
-    const height = 900;
+  const tap = Gesture.Tap().onStart((e) => {
+    const newPath = pathValue.value.copy();
+    newPath.moveTo(e.x, e.y);
+    newPath.lineTo(e.x, e.y);              
+    pathValue.value = newPath;             
+  });
 
-    useEffect(() => {
-        return () => {
-          activePath.current.reset();
-        };
-      }, []);
-    
-      
+  const pan = Gesture.Pan()
+    .onStart((e) => {
+      const newPath = pathValue.value.copy();
+      newPath.moveTo(e.x, e.y);
+      newPath.lineTo(e.x, e.y);
+      pathValue.value = newPath;
+    })
+    .onUpdate((e) => {
+      const newPath = pathValue.value.copy();
+      newPath.lineTo(e.x, e.y);
+      pathValue.value = newPath;
+    });
 
-    
+  const gesture = Gesture.Simultaneous(tap, pan);
 
-    return (
-            <Canvas
-                ref={canvasRef}
-                style={{ height, width, backgroundColor: 'white' }}
-                onTouchStart={(e) => {
-                    activePath.current.moveTo(e.nativeEvent.locationX, e.nativeEvent.locationY);
-                    canvasRef.current?.redraw();
-                }}
-                onTouchMove={(e) => {
-                    activePath.current.lineTo(e.nativeEvent.locationX, e.nativeEvent.locationY);
-                    console.log(`x : ${e.nativeEvent.locationX}, y: ${e.nativeEvent.locationY}`)
-                    
-                    canvasRef.current?.redraw();
-                    
-                }}
-            >
-                <Path path={activePath} style='stroke' strokeWidth={5} color="black"/>
-            </Canvas>
-    );
-};
-
-export default TestScreen;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <GestureDetector gesture={gesture}>
+        <Canvas style={{ flex: 1, backgroundColor: "white" }}>
+          <Path
+            path={pathValue}
+            style="stroke"
+            strokeWidth={3}
+            color="black"
+          />
+        </Canvas>
+      </GestureDetector>
+    </GestureHandlerRootView>
+  );
+}

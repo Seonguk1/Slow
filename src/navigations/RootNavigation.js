@@ -9,6 +9,8 @@ import HomeScreen from '@/screens/Home';
 import OnboardingScreen from '@/screens/Onboarding';
 import ProfileScreen from '@/screens/Profile';
 
+import TestScreen from '@/screens/Test';
+
 // 회원가입/설정 관련
 import SignupScreen from '@/screens/register/Signup';
 import CompletionScreen from '@/screens/register/Completion';
@@ -33,7 +35,7 @@ const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => (
     <NavigationContainer>
-    <Stack.Navigator initialRouteName="Intro" screenOptions={{ headerShown: false }}>
+    <Stack.Navigator initialRouteName="Test" screenOptions={{ headerShown: false }}>
       {/* <Stack.Screen name="Splash" component={SplashScreen} /> */}
       {/* <Stack.Screen name="Main" component={MainTabNavigator} /> */}
       <Stack.Screen name="Intro" component={IntroScreen} />
@@ -41,6 +43,8 @@ const RootNavigator = () => (
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="Onboarding" component={OnboardingScreen} />
       <Stack.Screen name="Profile" component={ProfileScreen} />
+
+      <Stack.Screen name="Test" component={TestScreen} />
 
       {/* 회원가입/설정 flow */}
       <Stack.Screen name="Signup" component={SignupScreen} />

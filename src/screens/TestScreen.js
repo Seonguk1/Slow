@@ -53,7 +53,6 @@ export default function TestScreen() {
     pathValue.value = Skia.Path.Make();
   };
 
-  // 점수 계산용: 히트박스 정의
   const targetBox = {
     x: 100,
     y: 200,
@@ -62,7 +61,7 @@ export default function TestScreen() {
   };
 
   const getPathPoints = (path) => {
-    const cmds = path.toCmds(); // [[0, x, y], [1, x, y], ...]
+    const cmds = path.toCmds(); 
     const points = [];
   
     for (const cmd of cmds) {

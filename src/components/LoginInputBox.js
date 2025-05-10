@@ -10,9 +10,9 @@ const LoginInputBox = ({ label, placeholder, value, onChangeText }) => {
             <Text style={{
                 color: "#828A8F",
                 fontFamily: "HakgyoansimBareondotumR",
-                marginBottom: 10,
+                marginBottom: scaleHeight(10),
                 fontWeight: 400,
-                fontSize: scaleFont(14)
+                fontSize: scaleFont(14,25)
             }}>
                 {label}
             </Text>
@@ -32,7 +32,7 @@ const LoginInputBox = ({ label, placeholder, value, onChangeText }) => {
                     <Text style={{
                         marginLeft: 30,
                         color: "#9D9D9D",
-                        fontSize: scaleFont(15),
+                        fontSize: scaleFont(15,25),
                         fontFamily: "HakgyoansimBareondotumR",
                     }}>
                         {placeholder}
@@ -45,7 +45,7 @@ const LoginInputBox = ({ label, placeholder, value, onChangeText }) => {
                         position: "absolute",
                         color: "#9D9D9D",
                         borderRadius: 30,
-                        fontSize: scaleFont(15),
+                        fontSize: scaleFont(15,25),
                         width: scaleWidth(330),
                         height: scaleHeight(48),
                         paddingLeft:30

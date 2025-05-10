@@ -6,6 +6,9 @@ const BASE_HEIGHT = 896;
 
 const scaleWidth = (designWidth) => (designWidth * width) / BASE_WIDTH;
 const scaleHeight = (designHeight) => (designHeight * height) / BASE_HEIGHT;
-const scaleFont = (size) => (size * width) / BASE_WIDTH;
+const scaleFont = (size, max) => {
+    const scaled = (size * width) / BASE_WIDTH;
+    return max ? Math.min(scaled, max) : scaled;
+};
 
 export { scaleWidth, scaleHeight, scaleFont };

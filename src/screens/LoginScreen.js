@@ -39,21 +39,21 @@ const LoginScreen = () => {
                     height: scaleHeight(180),
                     justifyContent: 'flex-end',
                     alignItems: 'center',
-                    marginBottom: 100,
-                    paddingBottom: 20,
+                    marginBottom: scaleHeight(100),
+                    paddingBottom: scaleHeight(20),
                     borderBottomLeftRadius: 30,
                     borderBottomRightRadius: 30
                 }}
             >
-                <Text style={{ color: 'white', fontSize: scaleFont(20), fontWeight: 700 }}>로그인</Text>
+                <Text style={{ color: 'white', fontSize: scaleFont(20, 35), fontWeight: 700 }}>로그인</Text>
             </LinearGradient>
             <Text style={{
                 width: scaleWidth(330),
                 alignSelf: "center",
-                marginBottom: 30,
+                marginBottom: scaleHeight(30),
                 color: "#000",
                 fontFamily: "HakgyoansimBareondotumB",
-                fontSize: scaleFont(20),
+                fontSize: scaleFont(20, 35),
                 fontWeight: 700
             }}>
                 {"이메일과 비밀번호를\n입력해주세요."}
@@ -75,7 +75,8 @@ const LoginScreen = () => {
 
             <TouchableOpacity
                 style={{
-                    marginTop: 20,
+                    marginTop: scaleHeight(20),
+                    marginBottom: scaleHeight(20),
                     backgroundColor: "#D2D5D6",
                     width: scaleWidth(330),
                     height: scaleHeight(58),
@@ -89,7 +90,7 @@ const LoginScreen = () => {
                     style={{
                         color: "#FAFAFB",
                         fontFamily: "HakgyoansimBareondotumR",
-                        fontSize: scaleFont(16),
+                        fontSize: scaleFont(16, 25),
                         fontWeight: 400,
                         alignSelf: "center"
                     }}
@@ -99,23 +100,23 @@ const LoginScreen = () => {
             </TouchableOpacity>
 
             <View style={{ width: scaleWidth(320), alignSelf: "center" }}>
-                <Text style={{ fontSize: scaleFont(13), color: "#4F5558" }}>
+                <Text style={{ fontSize: scaleFont(13, 20), color: "#4F5558" }}>
                     {"자동 로그인"}
                 </Text>
             </View>
-            <View style={{ marginTop: 100, width: scaleWidth(330), flexDirection: 'row', alignSelf: 'center', justifyContent: 'center', columnGap: 100 }}>
+            <View style={{ marginTop: scaleHeight(60), width: scaleWidth(330), flexDirection: 'row', alignSelf: 'center', justifyContent: 'center', columnGap: scaleWidth(50) }}>
                 <TouchableOpacity onPress={()=>{router.push("/register/signup")}}>
-                    <Text style={{ fontSize: scaleFont(11), color: "#4F5558" }}>
+                    <Text style={{ fontSize: scaleFont(11, 20), color: "#4F5558" }}>
                         {"회원가입"}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                    <Text style={{ fontSize: scaleFont(11), color: "#4F5558" }}>
+                    <Text style={{ fontSize: scaleFont(11, 20), color: "#4F5558" }}>
                         {"계정 찾기"}
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity>
-                    <Text style={{ fontSize: scaleFont(11), color: "#4F5558" }}>
+                    <Text style={{ fontSize: scaleFont(11, 20), color: "#4F5558" }}>
                         {"비밀번호 재설정"}
                     </Text>
                 </TouchableOpacity>

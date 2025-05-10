@@ -6,15 +6,15 @@ import { useRouter } from "expo-router";
 const ParentInfoScreen = () => {
     const router = useRouter();
     return (
-        <View style={{ flex: 1, paddingTop: 60, backgroundColor: "#fff" }}>
-            <TouchableOpacity style={{ marginBottom: 86 }}>
+        <View style={{ flex: 1, paddingTop: scaleHeight(60), backgroundColor: "#fff" }}>
+            <TouchableOpacity style={{ marginBottom: scaleHeight(86) }}>
                 <Text
                     style={{
                         color: "#FF8A65",
                         fontFamily: "HakgyoansimBareondotumR",
-                        fontSize: scaleFont(20),
+                        fontSize: scaleFont(20, 30),
                         fontWeight: 400,
-                        marginLeft: 30
+                        marginLeft: scaleWidth(30)
                     }}
                     onPress={() => {
                         router.back();
@@ -25,10 +25,10 @@ const ParentInfoScreen = () => {
             </TouchableOpacity>
             <Text style={{
                 alignSelf: "center",
-                marginBottom: 60,
+                marginBottom: scaleHeight(60),
                 color: "#37474F",
                 fontFamily: "HakgyoansimBareondotumB",
-                fontSize: scaleFont(25),
+                fontSize: scaleFont(25, 35),
                 fontWeight: 700,
             }}>
                 부모 정보를 입력해주세요.
@@ -51,10 +51,10 @@ const ParentInfoScreen = () => {
             />
             <CustomButton
                 text={"계속하기"}
-                width={scaleWidth(228)}
-                height={scaleHeight(56)}
+                width={228}
+                height={56}
                 style={{
-                    marginTop:80,
+                    marginTop: scaleHeight(60),
                     alignSelf:"center"
                 }}
                 onPress={()=>{

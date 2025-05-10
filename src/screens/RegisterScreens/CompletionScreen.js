@@ -31,7 +31,7 @@ const CompletionScreen = () => {
                     style={{
                         fontFamily:"HakgyoansimBareondotumR",
                         color:"#fff",
-                        fontSize:scaleFont(20),
+                        fontSize:scaleFont(20, 30),
                         fontWeight:700
                     }}
                 >

@@ -17,18 +17,17 @@ const MainIconBox = ({ color, image, text, onPress }) => {
         >
             <View style={{
                 backgroundColor: color,
-                width: scaleWidth(150),
-                height: scaleHeight(210),
-                borderRadius: 10,
-                marginRight: scaleWidth(20),
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 20
+                width: scaleWidth(140),
+                height: scaleHeight(230),
+                borderRadius: 15,
+                marginHorizontal: scaleWidth(10),
+                padding: 20,
+                justifyContent: 'space-between'
             }}>
                 <Text style={{
                     color: 'rgba(36, 60, 96, 1)',
-                    fontSize: scaleFont(22),
-                    fontWeight: 700,
+                    fontSize: scaleFont(22, 30),
+                    fontWeight: 600,
                     width: scaleWidth(130)
                 }}>
                     {text}
@@ -37,31 +36,6 @@ const MainIconBox = ({ color, image, text, onPress }) => {
             </View>
         </TouchableOpacity>
     )
-}
-
-const FooterIconBox = ({ color, frontimage, backimage, text, time }) => {
-    return (
-        <TouchableOpacity>
-            <View style={{
-                backgroundColor: color,
-                width: scaleWidth(309),
-                height: scaleHeight(85),
-                flexDirection: "row",
-                alignItems: "center",
-                borderRadius: 10,
-                marginBottom: scaleHeight(20),
-                paddingLeft: 10,
-                paddingRight: 10
-            }}>
-                <Image source={frontimage} style={{ width: scaleWidth(55), height: scaleHeight(55) }} resizeMode="contain" />
-                <View style={{ flex: 1, marginLeft: 15 }}>
-                    <Text style={{ fontSize: scaleFont(16), fontWeight: '700', color: "rgba(36, 60, 96, 1)" }}>{text}</Text>
-                    <Text style={{ fontSize: scaleFont(12), color: "rgba(36, 60, 96, 0.7)" }}>{time}</Text>
-                </View>
-                <Image source={backimage} style={{ width: scaleWidth(44), height: scaleHeight(44) }} resizeMode="contain" />
-            </View>
-        </TouchableOpacity>
-    );
 }
 
 const HomeScreen = () => {
@@ -80,7 +54,7 @@ const HomeScreen = () => {
         >
             <Text style={{
                 color: "#FFF",
-                fontSize: scaleFont(20),
+                fontSize: scaleFont(20, 30),
                 fontWeight: 900,
                 marginBottom: scaleHeight(40)
             }}>
@@ -95,16 +69,18 @@ const HomeScreen = () => {
                 backgroundColor: "white",
                 width: scaleWidth(414),
                 height: scaleHeight(650),
-                marginTop: 44,
+                marginTop: scaleHeight(44),
                 borderTopLeftRadius: 50,
                 borderTopRightRadius: 50,
                 alignItems: 'center'
             }}>
                 <View style={{
                     flexDirection: 'row',
-                    marginBottom: 30,
-                    marginTop: 43,
-                    width: scaleWidth(325)
+                    marginBottom: scaleHeight(30),
+                    marginTop: scaleHeight(43),
+                    width: scaleWidth(325),
+                    alignItems: 'center',
+                    justifyContent: 'center'
                 }}>
                     <MainIconBox
                         color={'rgba(126, 238, 174, 1)'}
@@ -119,23 +95,56 @@ const HomeScreen = () => {
                         onPress={()=>{router.push("/board/list")}}
                     />
                 </View>
+                <TouchableOpacity>
+                    <View style={{
+                        backgroundColor: 'rgba(51, 50, 66, 0.5)',
+                        width: scaleWidth(300),
+                        height: scaleHeight(95),
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderRadius: 10,
+                        marginBottom: scaleHeight(20),
+                        paddingLeft: scaleWidth(10),
+                        paddingRight: scaleWidth(10)
+                    }}>
+                        <View style={{ flex: 1, marginLeft: scaleWidth(15) }}>
+                            <Text style={{ fontSize: scaleFont(16, 26), fontWeight: '600', color: "#FFF" }}>우리 아이 성장 로드맵</Text>
+                            <Text style={{ fontSize: scaleFont(12, 22), color: "#FFF" }}>진단부터 맞춤 교육까지</Text>
+                        </View>
+                        <Image source={arrowIcon} style={{ width: scaleWidth(44), height: scaleHeight(44) }} resizeMode="contain" />
+                    </View>
+                </TouchableOpacity>
 
 
                 <View style={{
                     width: scaleWidth(300),
                     flexDirection: 'row',
                     justifyContent: 'space-between',
-                    marginBottom: 15
+                    marginBottom: scaleHeight(15)
                 }}>
-                    <Text style={{ color: 'rgba(36, 60, 96, 1)', fontWeight: 500, fontSize: scaleFont(16) }}>아이</Text>
-                    <Text style={{ color: 'rgba(126, 232, 255, 1)', fontWeight: 700, fontSize: scaleFont(16) }}>{">"}</Text>
+                    <Text style={{ color: 'rgba(36, 60, 96, 1)', fontWeight: 500, fontSize: scaleFont(16, 26) }}>아이</Text>
+                    <Text style={{ color: 'rgba(126, 232, 255, 1)', fontWeight: 700, fontSize: scaleFont(16, 26) }}>{">"}</Text>
                 </View>
 
-
-                <View>
-                    <FooterIconBox color={'rgba(255, 204, 102, 0.4)'} frontimage={profileIcon} backimage={arrowIcon} text={"JavaScript Avanzado"} time={"4시간 20분"}></FooterIconBox>
-                    <FooterIconBox color={'rgba(69, 238, 226, 0.4)'} frontimage={profileIcon} backimage={arrowIcon} text={"JavaScript Avanzado"} time={"4시간 20분"}></FooterIconBox>
-                </View>
+                <TouchableOpacity>
+                    <View style={{
+                        backgroundColor: '#FEF3D4',
+                        width: scaleWidth(300),
+                        height: scaleHeight(95),
+                        flexDirection: "row",
+                        alignItems: "center",
+                        borderRadius: 10,
+                        marginBottom: scaleHeight(20),
+                        paddingLeft: scaleWidth(10),
+                        paddingRight: scaleWidth(10)
+                    }}>
+                        <Image source={arrowIcon} style={{ width: scaleWidth(44), height: scaleHeight(44), marginLeft: scaleWidth(10) }} resizeMode="contain" />
+                        <View style={{ marginLeft: scaleWidth(15) }}>
+                            <Text style={{ fontSize: scaleFont(16, 26), fontWeight: '700', color: "#000" }}>미션 리포트</Text>
+                            <Text style={{ fontSize: scaleFont(12, 22), color: "#000" }}>아이의 활동 기록 살펴보기</Text>
+                        </View>
+                    </View>
+                </TouchableOpacity>
             </View>
         </LinearGradient>
     )

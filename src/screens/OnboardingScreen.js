@@ -48,9 +48,9 @@ const OnboardingScreen = () => {
                 source={onboardingImage[currentIndex]}
                 style={{
                     width: scaleWidth(414),
-                    height: scaleHeight(490),
+                    height: scaleHeight(400),
                     resizeMode: "stretch",
-                    marginBottom: 50,
+                    marginBottom: scaleHeight(100),
                 }}
             />
             <View style={{ flex: 1, justifyContent: "space-between", marginBottom: 100 }}>
@@ -58,22 +58,22 @@ const OnboardingScreen = () => {
                     <Text
                         style={{
                             fontFamily: "HakgyoansimBareondotumB",
-                            fontSize: scaleFont(25),
+                            fontSize: scaleFont(25,37),
                             color: "#37474F",
                             fontWeight: 700,
-                            marginLeft: 30,
-                            marginBottom: 48,
+                            marginLeft: scaleWidth(30),
+                            marginBottom: scaleHeight(48),
                         }}
                     >
                         {onboardingData[currentIndex].title}
                     </Text>
                     <Text style={{
                         fontFamily: "HakgyoansimBareondotumR",
-                        fontSize: scaleFont(20),
+                        fontSize: scaleFont(20,30),
                         color: "#37474F",
                         fontWeight: 400,
-                        marginLeft: 30,
-                        marginBottom: 0,
+                        marginLeft: scaleWidth(30),
+                        marginBottom: scaleHeight(100),
                     }}>
                         {onboardingData[currentIndex].desc}
                     </Text>
@@ -96,7 +96,8 @@ const OnboardingScreen = () => {
                                     fontFamily: "HakgyoansimBareondotumB",
                                     color: "#FF914D",
                                     fontWeight: 700,
-                                    fontSize: scaleFont(20)
+                                    fontSize: scaleFont(20, 30),
+                                    marginLeft: scaleWidth(10)
                                 }}
                             >
                                 Skip
@@ -127,7 +128,8 @@ const OnboardingScreen = () => {
                                     fontFamily: "HakgyoansimBareondotumB",
                                     color: "#FF914D",
                                     fontWeight: 700,
-                                    fontSize: scaleFont(20)
+                                    fontSize: scaleFont(20, 30),
+                                    marginRight: scaleWidth(10)
                                 }}
                             >
                                 Next
@@ -138,7 +140,7 @@ const OnboardingScreen = () => {
 
                     <CustomButton
                         width={150}
-                        height={40}
+                        height={50}
                         style={{alignSelf:"center"}}
                         text="시작하기"
                         onPress={() => {

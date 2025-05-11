@@ -7,6 +7,7 @@ import {
   Skia,
   Text,
   useFont,
+  notifyChange
 } from "@shopify/react-native-skia";
 import {
   GestureHandlerRootView,
@@ -15,42 +16,38 @@ import {
 } from "react-native-gesture-handler";
 import { useSharedValue } from "react-native-reanimated";
 
+
+
+
+
 export default function TestScreen() {
   const [currentCharIndex, setCurrentCharIndex] = useState(0);
   const characters = ["가", "나", "다", "라", "마"];
-  const font = useFont(fontSource, 120); // 글씨 크기
+  const font = useFont(fontSource, 120);
 
-  const pathValue = useSharedValue(Skia.Path.Make());
-
-  const tap = Gesture.Tap().onStart((e) => {
-    const newPath = pathValue.value.copy();
-    newPath.moveTo(e.x, e.y);
-    newPath.lineTo(e.x+2, e.y);
-    pathValue.value = newPath;
-  });
+  const currentPath = useSharedValue(Skia.Path.Make().moveTo(0, 0));
 
   const pan = Gesture.Pan()
-    .onStart((e) => {
-      const newPath = pathValue.value.copy();
-      newPath.moveTo(e.x, e.y);
-      newPath.lineTo(e.x, e.y);
-      pathValue.value = newPath;
+    .averageTouches(true)
+    .maxPointers(1)
+    .onBegin(e => {
+      currentPath.value.moveTo(e.x, e.y);
+      currentPath.value.lineTo(e.x, e.y);
+      notifyChange(currentPath);
     })
-    .onUpdate((e) => {
-      const newPath = pathValue.value.copy();
-      newPath.lineTo(e.x, e.y);
-      pathValue.value = newPath;
+    .onChange(e => {
+      currentPath.value.lineTo(e.x, e.y);
+      notifyChange(currentPath);
     });
 
-  const gesture = Gesture.Simultaneous(tap, pan);
 
   const handleNextChar = () => {
     setCurrentCharIndex((prev) => (prev + 1) % characters.length);
-    pathValue.value = Skia.Path.Make();
+    currentPath.value = Skia.Path.Make();
   };
 
   const handleClear = () => {
-    pathValue.value = Skia.Path.Make();
+    currentPath.value = Skia.Path.Make();
   };
 
   const targetBox = {
@@ -61,16 +58,16 @@ export default function TestScreen() {
   };
 
   const getPathPoints = (path) => {
-    const cmds = path.toCmds(); 
+    const cmds = path.toCmds(); // [[0, x, y], [1, x, y], ...]
     const points = [];
-  
+
     for (const cmd of cmds) {
       const [type, x, y] = cmd;
       if (type === 0 || type === 1) {
         points.push({ x, y });
       }
     }
-  
+
     return points;
   };
 
@@ -89,53 +86,48 @@ export default function TestScreen() {
     const total = points.length;
     if (total === 0) return 0;
     const inside = points.filter((pt) => isInBox(pt, targetBox)).length;
-    return Math.round((inside / (total+weight)) * 100);
+    return Math.round((inside / (total + weight)) * 100);
   };
 
   const handleCheckScore = () => {
-    const score = calculateScore(pathValue.value);
+    const score = calculateScore(currentPath.value);
     alert(`점수는 ${score}점입니다!`);
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={{ flex: 1 }}>
-        <GestureDetector gesture={gesture}>
-          <Canvas style={{ flex: 1, backgroundColor: "white" }}>
-            {/* 연습할 글자 (배경용) */}
-            {font && (
-              <Text
-                x={targetBox.x}
-                y={targetBox.y + targetBox.height / 2}
-                text={characters[currentCharIndex]}
-                font={font}
-                color="rgba(0,0,0,0.1)" // 연하게
-              />
-            )}
-            {/* 유저가 그린 Path */}
-            <Path
-              path={pathValue}
-              style="stroke"
-              strokeWidth={5}
-              color="black"
-            />
-          </Canvas>
-        </GestureDetector>
-
-        {/* 버튼 영역 */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            paddingVertical: 10,
-            backgroundColor: "#eee",
-          }}
+    <GestureHandlerRootView>
+      <GestureDetector gesture={pan}>
+        <Canvas
+          style={{ flex: 1 }}
         >
-          <Button title="지우기" onPress={handleClear} />
-          <Button title="다음 글자" onPress={handleNextChar} />
-          <Button title="점수 확인" onPress={handleCheckScore} />
-        </View>
+          {font && (
+            <Text
+              x={targetBox.x}
+              y={targetBox.y + targetBox.height / 2}
+              text={characters[currentCharIndex]}
+              font={font}
+              color="rgba(0,0,0,0.1)" // 연하게
+            />
+          )}
+          <Path
+            path={currentPath}
+            style="stroke"
+            strokeWidth={20}
+            strokeCap="round"
+            strokeJoin="round"
+          />
+        </Canvas>
+      </GestureDetector>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent:"space-around",
+        }}
+      >
+        <Button title="지우기" onPress={handleClear} />
+        <Button title="다음 글자" onPress={handleNextChar} />
+        <Button title="점수 확인" onPress={handleCheckScore} />
       </View>
-    </GestureHandlerRootView>
-  );
+    </GestureHandlerRootView >
+  )
 }

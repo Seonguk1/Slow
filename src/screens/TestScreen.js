@@ -35,7 +35,7 @@ export default function TestScreen() {
       currentPath.value.lineTo(e.x, e.y);
       notifyChange(currentPath);
     })
-    .onChange(e => {
+    .onChange(e => {  
       currentPath.value.lineTo(e.x, e.y);
       notifyChange(currentPath);
     });

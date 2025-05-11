@@ -1,119 +1,138 @@
-import React from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
-import { Canvas, Group, Path, Skia } from "@shopify/react-native-skia";
-import {
-  GestureDetector,
-  GestureHandlerRootView,
-  Gesture,
-} from "react-native-gesture-handler";
-import { useSharedValue } from "react-native-reanimated";
+import { Canvas, Path, Fill, Skia } from "@shopify/react-native-skia";
+import { GestureDetector, Gesture, GestureHandlerRootView } from "react-native-gesture-handler";
+import Animated, {
+    useSharedValue,
+    useAnimatedStyle,
+    useDerivedValue,
+    runOnJS,
+} from "react-native-reanimated";
 
-export default function TangramPuzzleScreen() {
-  // 퍼즐 조각 정의
-  const pieces = [
-    {
-      id: "triangle1",
-      points: [
-        { x: 0, y: 0 },
-        { x: 100, y: 0 },
-        { x: 0, y: 100 },
-      ],
-      fill: "#fdd835",
-      translateX: useSharedValue(50),
-      translateY: useSharedValue(50),
-      rotation: 0,
-    },
-    {
-      id: "square1",
-      points: [
-        { x: 0, y: 0 },
-        { x: 80, y: 0 },
-        { x: 80, y: 80 },
-        { x: 0, y: 80 },
-      ],
-      fill: "#4db6ac",
-      translateX: useSharedValue(200),
-      translateY: useSharedValue(50),
-      rotation: 0,
-    },
-  ];
+const L = 200;
 
-  // 현재 드래그 중인 조각 추적
-  const activePieceRef = React.useRef(null);
-  let startX = 0;
-  let startY = 0;
+function makePath(points) {
+    const path = Skia.Path.Make();
+    path.moveTo(...points[0]);
+    for (let i = 1; i < points.length; i++) {
+        path.lineTo(...points[i]);
+    }
+    path.close();
+    return path;
+}
 
-  // 바운딩 박스 체크 함수
-  const isInsidePiece = (x, y, piece) => {
-    const localX = x - piece.translateX.value;
-    const localY = y - piece.translateY.value;
+const initialShapes = [
+    { id: "big1", path: makePath([[0, 0], [L, 0], [0, L]]), color: "lightblue", initialX: 20, initialY: 20 },
+    { id: "big2", path: makePath([[L, 0], [L, L], [0, L]]), color: "lightgreen", initialX: 120, initialY: 20 },
+    { id: "mid", path: makePath([[0, 0], [100, 100], [0, 200]]), color: "orange", initialX: 220, initialY: 20 },
+    { id: "small1", path: makePath([[0, 0], [L / 2, 0], [0, L / 2]]), color: "pink", initialX: 20, initialY: 180 },
+    { id: "small2", path: makePath([[0, 0], [100, 0], [0, 100]]), color: "violet", initialX: 120, initialY: 180 },
+    { id: "square", path: makePath([[L / 2, 0], [L, L / 2], [L / 2, L], [0, L / 2]]), color: "gray", initialX: 220, initialY: 180 },
+    { id: "para", path: makePath([[0, L / 2], [L / 2, 0], [L, L / 2], [L / 2, L]]), color: "yellow", initialX: 150, initialY: 350 },
+];
 
-    const minX = Math.min(...piece.points.map((p) => p.x));
-    const maxX = Math.max(...piece.points.map((p) => p.x));
-    const minY = Math.min(...piece.points.map((p) => p.y));
-    const maxY = Math.max(...piece.points.map((p) => p.y));
+const TangramPuzzleScreen = () => {
+    const [shapeOrder, setShapeOrder] = useState(initialShapes.map(s => s.id));
 
-    return (
-      localX >= minX &&
-      localX <= maxX &&
-      localY >= minY &&
-      localY <= maxY
-    );
-  };
+    const shapes = initialShapes.map((item) => {
+        const tx = useSharedValue(item.initialX);
+        const ty = useSharedValue(item.initialY);
+        const offsetX = useSharedValue(0);
+        const offsetY = useSharedValue(0);
+        const isInside = useSharedValue(false);
 
-  // 제스처 정의 (하나만 만들어 전체에서 공통 사용)
-  const pan = Gesture.Pan()
-    .onStart((e) => {
-      // 어떤 조각을 눌렀는지 찾기
-      for (const piece of pieces) {
-        if (isInsidePiece(e.x, e.y, piece)) {
-          activePieceRef.current = piece;
-          startX = piece.translateX.value;
-          startY = piece.translateY.value;
-          console.log(piece)
-          return;
-        }
-      }
-      activePieceRef.current = null; // 아무 조각도 아님
-    })
-    .onUpdate((e) => {
-      if (activePieceRef.current) {
-        const piece = activePieceRef.current;
-        piece.translateX.value = startX + e.translationX;
-        piece.translateY.value = startY + e.translationY;
-      }
+        const bounds = item.path.computeTightBounds();
+        const width = bounds.width;
+        const height = bounds.height;
+        const pathOffsetX = bounds.x;
+        const pathOffsetY = bounds.y;
+
+        const bringToFront = () => {
+            setShapeOrder((prev) => {
+                const filtered = prev.filter(id => id !== item.id);
+                return [...filtered, item.id];
+            });
+        };
+
+        const gesture = Gesture.Pan()
+            .onBegin((e) => {
+                'worklet';
+                const localX = e.absoluteX - (tx.value + pathOffsetX);
+                const localY = e.absoluteY - (ty.value + pathOffsetY);
+                const inside = item.path.contains(localX, localY);
+                if (!inside) {
+                    isInside.value = false;
+                    console.log("무시됨")
+                    return;
+                }
+                isInside.value = true;
+                offsetX.value = tx.value;
+                offsetY.value = ty.value;
+                runOnJS(bringToFront)();
+            })
+            .onChange((e) => {
+                'worklet';
+                if (!isInside.value) return;
+                tx.value = offsetX.value + e.translationX;
+                ty.value = offsetY.value + e.translationY;
+                runOnJS(bringToFront)();
+            })
+            .onEnd(() => {
+                isInside.value = false;
+            });
+
+        const animatedStyle = useAnimatedStyle(() => ({
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width,
+            height,
+            transform: [
+                { translateX: tx.value + pathOffsetX },
+                { translateY: ty.value + pathOffsetY },
+            ],
+            
+        }));
+
+        const translatedPath = useDerivedValue(() => {
+            const m = Skia.Matrix();
+            m.translate(tx.value, ty.value);
+            return item.path.copy().transform(m);
+        }, [tx, ty]);
+
+        return {
+            id: item.id,
+            color: item.color,
+            gesture,
+            style: animatedStyle,
+            path: translatedPath,
+        };
     });
 
-  return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <GestureDetector gesture={pan}>
-        <View style={{ flex: 1 }}>
-          <Canvas style={{ flex: 1 }}>
-            {pieces.map((piece) => {
-              // 도형 경로 생성
-              const path = Skia.Path.Make();
-              path.moveTo(piece.points[0].x, piece.points[0].y);
-              piece.points.slice(1).forEach((pt) =>
-                path.lineTo(pt.x, pt.y)
-              );
-              path.close();
+    const getShapeById = (id) => shapes.find((s) => s.id === id);
 
-              return (
-                <Group
-                  key={piece.id}
-                  transform={[
-                    { translateX: piece.translateX.value },
-                    { translateY: piece.translateY.value },
-                    { rotate: piece.rotation },
-                  ]}
-                >
-                  <Path path={path} color={piece.fill} />
-                </Group>
-              );
-            })}
-          </Canvas>
+    return (
+        <View style={{ flex: 1 }}>
+            <GestureHandlerRootView>
+                <Canvas style={{ flex: 1 }}>
+                    <Fill color="white" />
+                    {shapeOrder.map(id => {
+                        const shape = getShapeById(id);
+                        return <Path key={id} path={shape.path} color={shape.color} />;
+                    })}
+                </Canvas>
+
+                {shapeOrder.map(id => {
+                    const shape = getShapeById(id);
+                    return (
+                        <GestureDetector key={id} gesture={shape.gesture}>
+                            <Animated.View style={shape.style} />
+                        </GestureDetector>
+                    );
+                })}
+            </GestureHandlerRootView>
         </View>
-      </GestureDetector>
-    </GestureHandlerRootView>
-  );
-}
+    );
+};
+
+export default TangramPuzzleScreen;

@@ -10,8 +10,8 @@ const InputBox = ({ label, placeholder, value, onChangeText, onFocus, onBlur }) 
             <Text style={{
                 color: "black",
                 fontFamily: "HakgyoansimBareondotumR",
-                marginBottom: 10,
-                fontSize: scaleFont(16),
+                marginBottom: scaleHeight(10),
+                fontSize: scaleFont(16, 25),
             }}>
                 {label}
             </Text>
@@ -24,14 +24,14 @@ const InputBox = ({ label, placeholder, value, onChangeText, onFocus, onBlur }) 
                 borderStyle: "solid",
                 borderRadius: 40,
                 justifyContent: "center",
-                marginBottom: 15,
+                marginBottom: scaleHeight(15),
                 alignSelf: "center"
             }}>
                 {value === '' && (
                     <Text style={{
-                        marginLeft: 20,
+                        marginLeft: scaleWidth(20),
                         color: "#ACACAC",
-                        fontSize: scaleFont(16),
+                        fontSize: scaleFont(16, 25),
                         fontFamily: "HakgyoansimBareondotumR"
                     }}>
                         {placeholder}
@@ -44,7 +44,7 @@ const InputBox = ({ label, placeholder, value, onChangeText, onFocus, onBlur }) 
                     onBlur={onBlur}
                     style={{
                         position: "absolute",
-                        marginLeft: 20,
+                        marginLeft: scaleWidth(20),
                         width: scaleWidth(280),
                     }}
                 />

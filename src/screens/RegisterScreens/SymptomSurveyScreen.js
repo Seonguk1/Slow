@@ -50,21 +50,26 @@ const SymptomSurveyScreen = () => {
     const [selectedId, setSelectedId] = useState(null);
 
     return (
-        <View style={{ flex: 1, paddingTop: 60, backgroundColor: "#fff" }}>
+        <View style={{ flex: 1, paddingTop: scaleHeight(60), backgroundColor: "#fff" }}>
 
             <View
                 style={{
                     flexDirection: "row",
                     justifyContent: "space-between",
-                    marginHorizontal: 30,
-                    marginBottom: 65
+                    marginHorizontal: scaleWidth(30),
+                    marginBottom: scaleHeight(65)
                 }}
             >
                 <TouchableOpacity
                     onPress={() => { router.back() }}
                 >
                     <Text
-                        style={styles.textHeader}
+                        style={{
+                            color: "#FF8A65",
+                            fontFamily: "HakgyoansimBareondotumR",
+                            fontSize: scaleFont(20, 30),
+                            fontWeight: 400
+                        }}
                         onPress={() => {
                             router.back();
                         }}
@@ -76,9 +81,14 @@ const SymptomSurveyScreen = () => {
                     onPress={() => { }}
                 >
                     <Text
-                        style={styles.textHeader}
+                        style={{
+                            color: "#FF8A65",
+                            fontFamily: "HakgyoansimBareondotumR",
+                            fontSize: scaleFont(20, 30),
+                            fontWeight: 400
+                        }}
                     >
-                        {"건너뛰기 >"}
+                        {"Skip >"}
                     </Text>
                 </TouchableOpacity >
             </View>
@@ -86,10 +96,10 @@ const SymptomSurveyScreen = () => {
             <Text
                 style={{
                     color: "#37474F",
-                    fontSize: scaleFont(25),
+                    fontSize: scaleFont(25,35),
                     fontWeight: 700,
-                    marginLeft: 40,
-                    marginBottom: 50,
+                    marginLeft: scaleWidth(50),
+                    marginBottom: scaleHeight(50),
                     fontFamily: "HakgyoansimBareondotumB"
                 }}
             >
@@ -100,18 +110,18 @@ const SymptomSurveyScreen = () => {
                     backgroundColor: "rgba(255, 138, 101, 0.80)",
                     width: scaleWidth(414),
                     height: scaleHeight(462),
-                    marginBottom: 25
+                    marginBottom: scaleHeight(25)
                 }}
             >
                 <Text
                     style={{
                         fontFamily: "HakgyoansimBareondotumB",
-                        fontSize: scaleFont(25),
+                        fontSize: scaleFont(25, 35),
                         fontWeight: 700,
                         color: "#fff",
-                        marginTop: 53,
-                        marginLeft: 55,
-                        marginBottom: 31
+                        marginTop: scaleHeight(53),
+                        marginLeft: scaleWidth(55),
+                        marginBottom: scaleHeight(31)
                     }}
                 >
                     {surveys[currentIndex].label}
@@ -127,7 +137,7 @@ const SymptomSurveyScreen = () => {
                                     height: scaleHeight(54),
                                     borderRadius: 36,
                                     backgroundColor: item.id !== selectedId ? "#fff" : "rgba(255, 255, 255, 0.70)",
-                                    marginBottom: 20,
+                                    marginBottom: scaleHeight(20),
                                     alignSelf: "center",
                                     justifyContent: "center"
                                 }}
@@ -139,14 +149,14 @@ const SymptomSurveyScreen = () => {
                                     flexDirection: "row",
                                     alignItems: "center",
                                     justifyContent: "space-between",
-                                    marginHorizontal: 20
+                                    marginHorizontal: scaleWidth(10)
                                 }}>
                                     <Text
                                         style={{
                                             fontFamily: "HakgyoansimBareondotumR",
                                             color: "#232323",
                                             fontWeight: 400,
-                                            fontSize: scaleFont(18),
+                                            fontSize: scaleFont(18, 23),
 
                                         }}
                                     >
@@ -169,8 +179,8 @@ const SymptomSurveyScreen = () => {
                 <View></View>
                 <CustomButton
                     text={currentIndex !== surveys.length-1?"다음":"완료"}
-                    width={scaleWidth(109)}
-                    height={scaleHeight(55)}
+                    width={109}
+                    height={55}
                     onPress={()=>{
                         if(!selectedId){
                             Alert.alert("항목을 선택해주세요.")

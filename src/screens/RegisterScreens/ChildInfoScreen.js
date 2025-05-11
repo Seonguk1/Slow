@@ -9,15 +9,15 @@ import InputBox from "../../components/boxes/InputBox";
 const ChildInfoScreen = () => {
     const router = useRouter();
     return (
-        <View style={{ flex: 1, paddingTop: 60, backgroundColor:"#fff" }}>
-            <TouchableOpacity style={{ marginBottom: 86 }}>
+        <View style={{ flex: 1, paddingTop: scaleHeight(60), backgroundColor:"#fff" }}>
+            <TouchableOpacity style={{ marginBottom: scaleHeight(86) }}>
                 <Text
                     style={{
                         color: "#FF8A65",
                         fontFamily: "HakgyoansimBareondotumR",
-                        fontSize: scaleFont(20),
+                        fontSize: scaleFont(20, 30),
                         fontWeight: 400,
-                        marginLeft: 30
+                        marginLeft: scaleWidth(30)
                     }}
                     onPress={()=>{
                         router.back();
@@ -29,10 +29,10 @@ const ChildInfoScreen = () => {
 
             <Text style={{
                 alignSelf: "center",
-                marginBottom: 92,
+                marginBottom: scaleHeight(92),
                 color: "#37474F",
                 fontFamily: "HakgyoansimBareondotumB",
-                fontSize: scaleFont(25),
+                fontSize: scaleFont(25, 35),
                 fontWeight: 700
             }}>
                 아이의 정보를 입력해주세요
@@ -44,9 +44,9 @@ const ChildInfoScreen = () => {
             <InputBox label={"재학여부"} placeholder={"선택"} />
             <CustomButton
                 onPress={() => { router.push("/register/testResult") }}
-                style={{ alignSelf: "center", marginTop: 140 }} 
-                width={scaleWidth(228)} 
-                height={scaleHeight(56)} 
+                style={{ alignSelf: "center", marginTop: scaleHeight(100) }} 
+                width={228} 
+                height={56} 
                 text={"계속하기"} />
         </View>
     )

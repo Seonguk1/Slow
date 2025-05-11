@@ -14,15 +14,15 @@ const data = [
 const InterestSelectionScreen = () => {
     const router = useRouter();
     return (
-        <View style={{ flex: 1, paddingTop: 60, backgroundColor: "#fff" }}>
-            <TouchableOpacity style={{ marginBottom: 86 }}>
+        <View style={{ flex: 1, paddingTop: scaleHeight(60), backgroundColor: "#fff" }}>
+            <TouchableOpacity style={{ marginBottom: scaleHeight(86) }}>
                 <Text
                     style={{
                         color: "#FF8A65",
                         fontFamily: "HakgyoansimBareondotumR",
-                        fontSize: scaleFont(20),
+                        fontSize: scaleFont(20, 30),
                         fontWeight: 400,
-                        marginLeft: 30
+                        marginLeft: scaleWidth(30)
                     }}
                     onPress={() => {
                         router.back();
@@ -33,10 +33,10 @@ const InterestSelectionScreen = () => {
             </TouchableOpacity>
             <Text style={{
                 alignSelf: "center",
-                marginBottom: 30,
+                marginBottom: scaleHeight(30),
                 color: "#37474F",
                 fontFamily: "HakgyoansimBareondotumB",
-                fontSize: scaleFont(25),
+                fontSize: scaleFont(25, 35),
                 fontWeight: 700
             }}>
                 아이의 관심사를 선택해주세요.
@@ -58,15 +58,15 @@ const InterestSelectionScreen = () => {
                                     width: scaleWidth(156),
                                     height: scaleHeight(212),
                                     borderRadius: 30,
-                                    shadowOffset: { width: 3, height: 6 },
+                                    shadowOffset: { width: 3, height: 3 },
                                     shadowOpacity: 0.1,
                                     shadowColor: "#575757",
                                     alignItems: "center",
                                     justifyContent: "center",
                                 },
                                 index % 2 === 0
-                                    ? { marginBottom: 56 }
-                                    : { marginTop: 56 }
+                                    ? { marginBottom: scaleHeight(56) }
+                                    : { marginTop: scaleHeight(56) }
                             ]}
                         
                             onPress={()=>{
@@ -79,7 +79,7 @@ const InterestSelectionScreen = () => {
                             <Text
                                 style={{
                                     fontFamily: "HakgyoansimBareondotumR",
-                                    fontSize: scaleFont(22),
+                                    fontSize: scaleFont(22, 30),
                                     fontWeight: 700
                                 }}
                             >

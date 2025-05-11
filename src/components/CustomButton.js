@@ -1,11 +1,12 @@
+import { scaleFont, scaleHeight, scaleWidth } from "@/utils/responsive";
 import { TouchableOpacity, Text } from "react-native";
 
 const CustomButton = ({width, height, text, onPress, style})=>{
     return(
         <TouchableOpacity
             style={[{
-                width: width,
-                height: height,
+                width: scaleWidth(width),
+                height: scaleHeight(height),
                 borderRadius: 30,
                 borderColor:"#E6E1DA",
                 borderWidth: 1,
@@ -21,7 +22,7 @@ const CustomButton = ({width, height, text, onPress, style})=>{
             style={{
                 color:"#FF8A65",
                 fontFamily:"HakgyoansimBareondotumB",
-                fontSize:20,
+                fontSize: scaleFont(20, 25),
                 fontWeight: 700
 
             }}

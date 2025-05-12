@@ -1,133 +1,89 @@
-import fontSource from "@/assets/fonts/HakgyoansimBareondotumB.ttf";
-import React, { useState } from "react";
-import { View, Button } from "react-native";
-import {
-  Canvas,
-  Path,
-  Skia,
-  Text,
-  useFont,
-  notifyChange
-} from "@shopify/react-native-skia";
-import {
-  GestureHandlerRootView,
-  GestureDetector,
-  Gesture,
-} from "react-native-gesture-handler";
-import { useSharedValue } from "react-native-reanimated";
+import { Canvas, Path, point, Skia } from "@shopify/react-native-skia";
+import { Button, Text, View } from "react-native"
+import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
+import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated"
 
 
+export default TestScreen = () => {
+    const L = 150;
 
+    const shapes = [
+        {
+            id: "triangle1",
+            color: "skyblue",
+            x: useSharedValue(100),
+            y: useSharedValue(100),
+            path: useSharedValue(Skia.Path.Make()),
+            updatePath: (x, y) => {
+                return Skia.Path.Make()
+                    .moveTo(x, y)
+                    .lineTo(x + L, y)
+                    .lineTo(x + L, y + L)
+                    .close();
+            },
+            contains: (px, py, x, y) => (
+                px > x && px < x + L &&
+                py > y && py < px - x + y
+            ),
+        },
+        {
+            id: "triangle2",
+            color: "green",
+            x: useSharedValue(200),
+            y: useSharedValue(200),
+            path: useSharedValue(Skia.Path.Make()),
+            updatePath: (x, y) => {
+                return Skia.Path.Make()
+                    .moveTo(x, y)
+                    .lineTo(x + L, y)
+                    .lineTo(x + L, y + L)
+                    .close();
+            },
+            contains: (px, py, x, y) => (
+                px > x && px < x + L &&
+                py > y && py < px - x + y
+            ),
+        },
+    ]
 
-
-export default function TestScreen() {
-  const [currentCharIndex, setCurrentCharIndex] = useState(0);
-  const characters = ["가", "나", "다", "라", "마"];
-  const font = useFont(fontSource, 120);
-
-  const currentPath = useSharedValue(Skia.Path.Make().moveTo(0, 0));
-
-  const pan = Gesture.Pan()
-    .averageTouches(true)
-    .maxPointers(1)
-    .onBegin(e => {
-      currentPath.value.moveTo(e.x, e.y);
-      currentPath.value.lineTo(e.x, e.y);
-      notifyChange(currentPath);
-    })
-    .onChange(e => {  
-      currentPath.value.lineTo(e.x, e.y);
-      notifyChange(currentPath);
+    shapes.forEach((shape) => {
+        shape.path.value = shape.updatePath(shape.x.value, shape.y.value);
     });
 
+    const gesture = Gesture.Pan().onChange((e) => {
+        shapes.forEach((shape) => {
+            if (
+                (e.x > shape.x.value && e.x < shape.x.value + L) &&
+                (e.y > shape.y.value && e.y < e.x - shape.x.value + shape.y.value)
+            ) {
+                shape.x.value += e.changeX;
+                shape.y.value += e.changeY;
+                shape.path.value = Skia.Path.Make()
+                    .moveTo(shape.x.value, shape.y.value)
+                    .lineTo(shape.x.value + L, shape.y.value)
+                    .lineTo(shape.x.value + L, shape.y.value + L)
+                    .close();
+            }
+        });
+    });
 
-  const handleNextChar = () => {
-    setCurrentCharIndex((prev) => (prev + 1) % characters.length);
-    currentPath.value = Skia.Path.Make();
-  };
-
-  const handleClear = () => {
-    currentPath.value = Skia.Path.Make();
-  };
-
-  const targetBox = {
-    x: 100,
-    y: 200,
-    width: 200,
-    height: 200,
-  };
-
-  const getPathPoints = (path) => {
-    const cmds = path.toCmds(); // [[0, x, y], [1, x, y], ...]
-    const points = [];
-
-    for (const cmd of cmds) {
-      const [type, x, y] = cmd;
-      if (type === 0 || type === 1) {
-        points.push({ x, y });
-      }
-    }
-
-    return points;
-  };
-
-  const isInBox = (pt, box) => {
     return (
-      pt.x >= box.x &&
-      pt.x <= box.x + box.width &&
-      pt.y >= box.y &&
-      pt.y <= box.y + box.height
-    );
-  };
-
-  const calculateScore = (path) => {
-    const weight = 10
-    const points = getPathPoints(path);
-    const total = points.length;
-    if (total === 0) return 0;
-    const inside = points.filter((pt) => isInBox(pt, targetBox)).length;
-    return Math.round((inside / (total + weight)) * 100);
-  };
-
-  const handleCheckScore = () => {
-    const score = calculateScore(currentPath.value);
-    alert(`점수는 ${score}점입니다!`);
-  };
-
-  return (
-    <GestureHandlerRootView>
-      <GestureDetector gesture={pan}>
-        <Canvas
-          style={{ flex: 1 }}
-        >
-          {font && (
-            <Text
-              x={targetBox.x}
-              y={targetBox.y + targetBox.height / 2}
-              text={characters[currentCharIndex]}
-              font={font}
-              color="rgba(0,0,0,0.1)" // 연하게
-            />
-          )}
-          <Path
-            path={currentPath}
-            style="stroke"
-            strokeWidth={20}
-            strokeCap="round"
-            strokeJoin="round"
-          />
-        </Canvas>
-      </GestureDetector>
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent:"space-around",
-        }}
-      >
-        <Button title="지우기" onPress={handleClear} />
-        <Button title="다음 글자" onPress={handleNextChar} />
-        <Button title="점수 확인" onPress={handleCheckScore} />
-      </View>
-    </GestureHandlerRootView >
-  )
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <GestureDetector gesture={gesture}>
+                <Canvas
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                    }}
+                >
+                    {shapes.map((shape) => (
+                        <Path key={shape.id} path={shape.path} color={shape.color} />
+                    ))}
+                </Canvas>
+            </GestureDetector>
+        </GestureHandlerRootView>
+    )
 }

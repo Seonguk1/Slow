@@ -8,8 +8,6 @@ const scaleWidth = (designWidth) => (designWidth * width) / BASE_WIDTH;
 const scaleHeight = (designHeight) => (designHeight * height) / BASE_HEIGHT;
 const scaleFont = (size, max) => {
     const scaled = (size * width) / BASE_WIDTH;
-    console.log(`sca: ${scaled}`)
-    console.log(max)
     return max ? Math.min(scaled, max) : scaled;
 };
 

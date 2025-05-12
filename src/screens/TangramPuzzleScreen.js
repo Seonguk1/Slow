@@ -81,7 +81,7 @@ const rawShapes = [
     id: "square",
     rawPoints: [[0, 0], [L / 4, L / 4], [0, L / 2], [-L / 4, L / 4]],
     color: "skyblue",
-    baseX: frameX + L / 2,
+    baseX: frameX + L / 2,  
     baseY: frameY + L / 2,
     initialX: -200,
     initialY: -500,

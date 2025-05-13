@@ -1,10 +1,10 @@
-import { Canvas, PaintStyle, Path, point, Rect, Skia } from "@shopify/react-native-skia";
-import { useState } from "react";
-import { Button, Dimensions, Text, View } from "react-native"
+
+
+import { Canvas, PaintStyle, Path, Rect, Skia } from "@shopify/react-native-skia";
+import { useRef, useState } from "react";
+import { Dimensions } from "react-native";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
-import Animated, { useAnimatedStyle, useSharedValue } from "react-native-reanimated"
-
-
+import { useSharedValue, runOnJS } from "react-native-reanimated";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -23,9 +23,8 @@ const PuzzleFrame = () => {
     return <Rect x={frameX} y={frameY} width={L} height={L} paint={paint} />;
 };
 
-export default TestScreen = () => {
-
-    const shapes = [
+export default function TestScreen() {
+    const shapes = useRef([
         {
             id: "big1",
             color: "blue",
@@ -35,7 +34,7 @@ export default TestScreen = () => {
             correctY: frameY,
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
-                'worklet';
+                "worklet";
                 return Skia.Path.Make()
                     .moveTo(x, y)
                     .lineTo(x + L, y)
@@ -43,23 +42,23 @@ export default TestScreen = () => {
                     .close();
             },
             contains: (px, py, x, y) => {
-                'worklet';
+                "worklet";
                 return (
                     (px > x && px < x + L / 2 && py > y && py < px - x + y) ||
                     (px > x + L / 2 && px < x + L && py > y && py < -px + x + y + L)
-                )
-            }
+                );
+            },
         },
         {
             id: "big2",
             color: "red",
             x: useSharedValue(frameX + L / 2),
             y: useSharedValue(frameY + L / 2),
-            correctX: frameX+L/2,
-            correctY: frameY+L/2,
+            correctX: frameX + L / 2,
+            correctY: frameY + L / 2,
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
-                'worklet';
+                "worklet";
                 return Skia.Path.Make()
                     .moveTo(x, y)
                     .lineTo(x + L / 2, y - L / 2)
@@ -67,12 +66,9 @@ export default TestScreen = () => {
                     .close();
             },
             contains: (px, py, x, y) => {
-                'worklet';
-                return (
-                    (px > x && px < x + L / 2) &&
-                    (py > -px + x + y && py < px - x + y)
-                );
-            }
+                "worklet";
+                return px > x && px < x + L / 2 && py > -px + x + y && py < px - x + y;
+            },
         },
         {
             id: "mid",
@@ -80,10 +76,10 @@ export default TestScreen = () => {
             x: useSharedValue(frameX),
             y: useSharedValue(frameY + L / 2),
             correctX: frameX,
-            correctY: frameY+L/2,
+            correctY: frameY + L / 2,
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
-                'worklet';
+                "worklet";
                 return Skia.Path.Make()
                     .moveTo(x, y)
                     .lineTo(x, y + L / 2)
@@ -91,23 +87,20 @@ export default TestScreen = () => {
                     .close();
             },
             contains: (px, py, x, y) => {
-                'worklet';
-                return (
-                    (px > x && px < x + L / 2) &&
-                    (py > px - x + y && py < y + L / 2)
-                );
-            }
+                "worklet";
+                return px > x && px < x + L / 2 && py > px - x + y && py < y + L / 2;
+            },
         },
         {
             id: "square",
             color: "skyblue",
             x: useSharedValue(frameX + L / 4),
-            y: useSharedValue(frameY + L * 3 / 4),
-            correctX: frameX+L/4,
-            correctY: frameY+L*3/4,
+            y: useSharedValue(frameY + (L * 3) / 4),
+            correctX: frameX + L / 4,
+            correctY: frameY + (L * 3) / 4,
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
-                'worklet';
+                "worklet";
                 return Skia.Path.Make()
                     .moveTo(x, y)
                     .lineTo(x + L / 4, y + L / 4)
@@ -116,13 +109,15 @@ export default TestScreen = () => {
                     .close();
             },
             contains: (px, py, x, y) => {
-                'worklet';
+                "worklet";
                 return (
-                    ((px > x && px < x + L / 4) && (py > -px + x + y && py < px - x + y)) ||
-                    ((px > x + L / 4 && px < x + L / 2) && (py > px - x + y - L / 2 && py < -px + x + y + L / 2))
-
+                    (px > x && px < x + L / 4 && py > -px + x + y && py < px - x + y) ||
+                    (px > x + L / 4 &&
+                        px < x + L / 2 &&
+                        py > px - x + y - L / 2 &&
+                        py < -px + x + y + L / 2)
                 );
-            }
+            },
         },
         {
             id: "para",
@@ -133,32 +128,34 @@ export default TestScreen = () => {
             correctY: frameY,
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
-                'worklet';
+                "worklet";
                 return Skia.Path.Make()
                     .moveTo(x, y)
                     .lineTo(x, y + L / 2)
-                    .lineTo(x + L / 4, y + L * 3 / 4)
+                    .lineTo(x + L / 4, y + (L * 3) / 4)
                     .lineTo(x + L / 4, y + L / 4)
                     .close();
             },
             contains: (px, py, x, y) => {
-                'worklet';
+                "worklet";
                 return (
-                    (px > x && px < x + L / 4) &&
-                    (py > px - x + y && py < px - x + y + L / 2)
+                    px > x &&
+                    px < x + L / 4 &&
+                    py > px - x + y &&
+                    py < px - x + y + L / 2
                 );
-            }
+            },
         },
         {
             id: "small1",
             color: "pink",
             x: useSharedValue(frameX + L / 4),
             y: useSharedValue(frameY + L / 4),
-            correctX: frameX+L/4,
-            correctY: frameY+L/4,
+            correctX: frameX + L / 4,
+            correctY: frameY + L / 4,
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
-                'worklet';
+                "worklet";
                 return Skia.Path.Make()
                     .moveTo(x, y)
                     .lineTo(x, y + L / 2)
@@ -166,23 +163,25 @@ export default TestScreen = () => {
                     .close();
             },
             contains: (px, py, x, y) => {
-                'worklet';
+                "worklet";
                 return (
-                    (px > x && px < x + L / 4) &&
-                    (py > px - x + y && py < -px + x + y + L / 2)
+                    px > x &&
+                    px < x + L / 4 &&
+                    py > px - x + y &&
+                    py < -px + x + y + L / 2
                 );
-            }
+            },
         },
         {
             id: "small2",
             color: "lightgreen",
             x: useSharedValue(frameX + L / 2),
             y: useSharedValue(frameY + L),
-            correctX: frameX+L/2,
-            correctY: frameY+L,
+            correctX: frameX + L / 2,
+            correctY: frameY + L,
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
-                'worklet';
+                "worklet";
                 return Skia.Path.Make()
                     .moveTo(x, y)
                     .lineTo(x + L / 4, y - L / 4)
@@ -190,16 +189,30 @@ export default TestScreen = () => {
                     .close();
             },
             contains: (px, py, x, y) => {
-                'worklet';
+                "worklet";
                 return (
-                    ((px > x && px < x + L / 4) && (py > -px + x + y && py < y)) ||
-                    ((px > x + L / 4 && px < x + L / 2) && (py > px - x + y - L / 2 && py < y))
+                    (px > x &&
+                        px < x + L / 4 &&
+                        py > -px + x + y &&
+                        py < y) ||
+                    (px > x + L / 4 &&
+                        px < x + L / 2 &&
+                        py > px - x + y - L / 2 &&
+                        py < y)
                 );
-            }
+            },
         },
-    ];
+    ]);
 
-    shapes.forEach((shape) => {
+    const [shapeOrder, setShapeOrder] = useState(shapes.current.map((s) => s.id)); // z-index 순서만 관리
+    const bringToFront = (id) => {
+        setShapeOrder((prev) => {
+            const filtered = prev.filter((x) => x !== id);
+            return [...filtered, id];
+        });
+    };
+
+    shapes.current.forEach((shape) => {
         shape.path.value = shape.updatePath(shape.x.value, shape.y.value);
     });
 
@@ -212,10 +225,11 @@ export default TestScreen = () => {
 
     const gesture = Gesture.Pan()
         .onBegin((e) => {
-            for (let i = shapes.length - 1; i >= 0; i--) {
-                const shape = shapes[i];
+            for (let i = shapes.current.length - 1; i >= 0; i--) {
+                const shape = shapes.current[i];
                 if (shape.contains(e.x, e.y, shape.x.value, shape.y.value)) {
                     activeShape.value = shape;
+                    runOnJS(bringToFront)(shape.id); // JSX 렌더 순서 변경
                     break;
                 }
             }
@@ -256,11 +270,14 @@ export default TestScreen = () => {
                     }}
                 >
                     <PuzzleFrame />
-                    {shapes.map((shape) => (
-                        <Path key={shape.id} path={shape.path} color={shape.color} />
-                    ))}
+                    {shapeOrder.map((id) => {
+                        const shape = shapes.current.find((s) => s.id === id);
+                        return (
+                            <Path key={shape.id} path={shape.path} color={shape.color} />
+                        );
+                    })}
                 </Canvas>
             </GestureDetector>
         </GestureHandlerRootView>
-    )
+    );
 }

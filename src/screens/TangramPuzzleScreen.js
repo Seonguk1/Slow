@@ -182,7 +182,7 @@ const TangramPuzzleScreen = () => {
         if (distance < SNAP_THRESHOLD) {
           tx.value = item.correctX;
           ty.value = item.correctY;
-        }
+        }   
       });
 
     const animatedStyle = useAnimatedStyle(() => ({

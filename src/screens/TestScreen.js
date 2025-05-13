@@ -2,7 +2,7 @@
 
 import { Canvas, PaintStyle, Path, Rect, Skia } from "@shopify/react-native-skia";
 import { useRef, useState } from "react";
-import { Dimensions } from "react-native";
+import { Alert, Dimensions } from "react-native";
 import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
 import { useSharedValue, runOnJS } from "react-native-reanimated";
 
@@ -223,11 +223,16 @@ export default function TestScreen() {
         return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
     };
 
+    const orderedShapes = shapeOrder
+        .map((id) => shapes.current.find((s) => s.id === id))
+        .filter(Boolean); // 혹시라도 null 방지
+
     const gesture = Gesture.Pan()
         .onBegin((e) => {
             for (let i = shapes.current.length - 1; i >= 0; i--) {
-                const shape = shapes.current[i];
+                const shape = orderedShapes[i];
                 if (shape.contains(e.x, e.y, shape.x.value, shape.y.value)) {
+                    console.log(shape)
                     activeShape.value = shape;
                     runOnJS(bringToFront)(shape.id); // JSX 렌더 순서 변경
                     break;

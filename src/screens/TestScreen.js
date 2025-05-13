@@ -15,16 +15,17 @@ export default TestScreen = () => {
             y: useSharedValue(100),
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
+                'worklet';
                 return Skia.Path.Make()
                     .moveTo(x, y)
                     .lineTo(x + L, y)
                     .lineTo(x + L, y + L)
                     .close();
             },
-            contains: (px, py, x, y) => (
-                px > x && px < x + L &&
-                py > y && py < px - x + y
-            ),
+            contains: (px, py, x, y) => {
+                'worklet';
+                return px > x && px < x + L && py > y && py < px - x + y;
+            }
         },
         {
             id: "triangle2",
@@ -33,16 +34,17 @@ export default TestScreen = () => {
             y: useSharedValue(200),
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
+                'worklet';
                 return Skia.Path.Make()
                     .moveTo(x, y)
                     .lineTo(x + L, y)
                     .lineTo(x + L, y + L)
                     .close();
             },
-            contains: (px, py, x, y) => (
-                px > x && px < x + L &&
-                py > y && py < px - x + y
-            ),
+            contains: (px, py, x, y) => {
+                'worklet';
+                return px > x && px < x + L && py > y && py < px - x + y;
+            }
         },
     ]
 
@@ -50,22 +52,29 @@ export default TestScreen = () => {
         shape.path.value = shape.updatePath(shape.x.value, shape.y.value);
     });
 
-    const gesture = Gesture.Pan().onChange((e) => {
-        shapes.forEach((shape) => {
-            if (
-                (e.x > shape.x.value && e.x < shape.x.value + L) &&
-                (e.y > shape.y.value && e.y < e.x - shape.x.value + shape.y.value)
-            ) {
+    const activeShape = useSharedValue(null);
+
+    const gesture = Gesture.Pan()
+        .onBegin((e) => {
+            for (let i = shapes.length - 1; i >= 0; i--) {
+                const shape = shapes[i];
+                if (shape.contains(e.x, e.y, shape.x.value, shape.y.value)) {
+                    activeShape.value = shape;
+                    break;
+                }
+            }
+        })
+        .onChange((e) => {
+            if (activeShape.value) {
+                const shape = activeShape.value;
                 shape.x.value += e.changeX;
                 shape.y.value += e.changeY;
-                shape.path.value = Skia.Path.Make()
-                    .moveTo(shape.x.value, shape.y.value)
-                    .lineTo(shape.x.value + L, shape.y.value)
-                    .lineTo(shape.x.value + L, shape.y.value + L)
-                    .close();
+                shape.path.value = shape.updatePath(shape.x.value, shape.y.value);
             }
+        })
+        .onEnd(() => {
+            activeShape.value = null;
         });
-    });
 
     return (
         <GestureHandlerRootView style={{ flex: 1 }}>

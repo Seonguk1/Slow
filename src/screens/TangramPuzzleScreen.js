@@ -1,19 +1,13 @@
-import React, { useState } from "react";
-import { Dimensions, View } from "react-native";
-import {
-  Canvas, Path, Fill, Skia, Paint, PaintStyle, Rect,
-} from "@shopify/react-native-skia";
-import {
-  GestureDetector,
-  Gesture,
-  GestureHandlerRootView,
-} from "react-native-gesture-handler";
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  useDerivedValue,
-  runOnJS,
-} from "react-native-reanimated";
+
+
+import { Canvas, PaintStyle, Path, Rect, Skia } from "@shopify/react-native-skia";
+import { useEffect, useRef, useState } from "react";
+import { Alert, Button, Dimensions } from "react-native";
+import { Gesture, GestureDetector, GestureHandlerRootView } from "react-native-gesture-handler";
+import { useSharedValue, runOnJS } from "react-native-reanimated";
+import { useAudioPlayer } from 'expo-audio';
+
+const audioSource = require('@/assets/sounds/snap.wav');
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -24,220 +18,346 @@ const frameY = (windowHeight - L) / 2;
 const SNAP_THRESHOLD = 50;
 
 const PuzzleFrame = () => {
-  const paint = Skia.Paint();
-  paint.setStyle(PaintStyle.Stroke);
-  paint.setStrokeWidth(3);
-  paint.setColor(Skia.Color("black"));
+    const STROKE_WIDTH = 20;
+    const paint = Skia.Paint();
+    paint.setStyle(PaintStyle.Stroke);
+    paint.setStrokeWidth(STROKE_WIDTH);
+    paint.setColor(Skia.Color("orange"));
 
-  return <Rect x={frameX} y={frameY} width={L} height={L} paint={paint} />;
+    return <Rect x={frameX - STROKE_WIDTH / 2} y={frameY - STROKE_WIDTH / 2} width={L + STROKE_WIDTH} height={L + STROKE_WIDTH} paint={paint} />;
 };
 
-function makePath(points) {
-  const path = Skia.Path.Make();
-  path.moveTo(...points[0]);
-  for (let i = 1; i < points.length; i++) {
-    path.lineTo(...points[i]);
-  }
-  path.close();
-  return path;
-}
+const getRandomPosition = () => {
+    const padding = 20;
+    const minX = padding;
+    const maxX = windowWidth - L / 2 - padding;
+    const minY = padding;
+    const maxY = windowHeight - L / 2 - padding;
 
-function normalizePath(points) {
-  const minX = Math.min(...points.map(([x]) => x));
-  const minY = Math.min(...points.map(([_, y]) => y));
-  const shifted = points.map(([x, y]) => [x - minX, y - minY]);
-  return { points: shifted, offsetX: minX, offsetY: minY };
-}
+    const randX = Math.random() * (maxX - minX) + minX;
+    const randY = Math.random() * (maxY - minY) + minY;
 
-const rawShapes = [
-  {
-    id: "big1",
-    rawPoints: [[0, 0], [L, 0], [L / 2, L / 2]],
-    color: "blue",
-    baseX: frameX,
-    baseY: frameY,
-    initialX: -100,
-    initialY: 550,
-  },
-  {
-    id: "big2",
-    rawPoints: [[0, 0], [0, L], [-L / 2, L / 2]],
-    color: "red",
-    baseX: frameX + L,
-    baseY: frameY,
-    initialX: 100,
-    initialY: -80,
-  },
-  {
-    id: "mid",
-    rawPoints: [[0, 0], [L / 2, L / 2], [0, L / 2]],
-    color: "purple",
-    baseX: frameX,
-    baseY: frameY + L / 2,
-    initialX: 400,
-    initialY: -500,
-  },
-  {
-    id: "square",
-    rawPoints: [[0, 0], [L / 4, L / 4], [0, L / 2], [-L / 4, L / 4]],
-    color: "skyblue",
-    baseX: frameX + L / 2,  
-    baseY: frameY + L / 2,
-    initialX: -200,
-    initialY: -500,
-  },
-  {
-    id: "para",
-    rawPoints: [[0, 0], [L / 4, L / 4], [L / 4, L * 3 / 4], [0, L / 2]],
-    color: "yellow",
-    baseX: frameX,
-    baseY: frameY,
-    initialX: -80,
-    initialY: -100,
-  },
-  {
-    id: "small1",
-    rawPoints: [[0, 0], [L / 4, L / 4], [0, L / 2]],
-    color: "pink",
-    baseX: frameX + L / 4,
-    baseY: frameY + L / 4,
-    initialX: 130,
-    initialY: 80,
-  },
-  {
-    id: "small2",
-    rawPoints: [[0, 0], [L / 4, -L / 4], [L / 2, 0]],
-    color: "lightgreen",
-    baseX: frameX + L / 2,
-    baseY: frameY + L,
-    initialX: -90,
-    initialY: 90,
-  },
-];
+    return { x: randX, y: randY };
+};
 
-const initialShapes = rawShapes.map(({ id, rawPoints, color, baseX, baseY, initialX, initialY }) => {
-  const { points, offsetX, offsetY } = normalizePath(rawPoints);
-  return {
-    id,
-    path: makePath(points),
-    color,
-    initialX: baseX + offsetX + initialX,
-    initialY: baseY + offsetY + initialY,
-    correctX: baseX + offsetX,
-    correctY: baseY + offsetY,
-  };
-});
+export default function TangramPuzzleScreen() {
+    const shapes = useRef([
+        {
+            id: "big1",
+            color: "blue",
+            x: useSharedValue(frameX),
+            y: useSharedValue(frameY),
+            correctX: frameX,
+            correctY: frameY,
 
-const TangramPuzzleScreen = () => {
-  const [shapeOrder, setShapeOrder] = useState(initialShapes.map((s) => s.id));
+            path: useSharedValue(Skia.Path.Make()),
+            updatePath: (x, y) => {
+                "worklet";
+                return Skia.Path.Make()
+                    .moveTo(x, y)
+                    .lineTo(x + L, y)
+                    .lineTo(x + L / 2, y + L / 2)
+                    .close();
+            },
+            contains: (px, py, x, y) => {
+                "worklet";
+                return (
+                    (px > x && px < x + L / 2 && py > y && py < px - x + y) ||
+                    (px > x + L / 2 && px < x + L && py > y && py < -px + x + y + L)
+                );
+            },
+        },
+        {
+            id: "big2",
+            color: "red",
+            x: useSharedValue(frameX + L / 2),
+            y: useSharedValue(frameY + L / 2),
+            correctX: frameX + L / 2,
+            correctY: frameY + L / 2,
 
-  const shapes = initialShapes.map((item) => {
-    const tx = useSharedValue(item.initialX);
-    const ty = useSharedValue(item.initialY);
-    const offsetX = useSharedValue(0);
-    const offsetY = useSharedValue(0);
-    const isInside = useSharedValue(false);
+            path: useSharedValue(Skia.Path.Make()),
+            updatePath: (x, y) => {
+                "worklet";
+                return Skia.Path.Make()
+                    .moveTo(x, y)
+                    .lineTo(x + L / 2, y - L / 2)
+                    .lineTo(x + L / 2, y + L / 2)
+                    .close();
+            },
+            contains: (px, py, x, y) => {
+                "worklet";
+                return px > x && px < x + L / 2 && py > -px + x + y && py < px - x + y;
+            },
+        },
+        {
+            id: "mid",
+            color: "purple",
+            x: useSharedValue(frameX),
+            y: useSharedValue(frameY + L / 2),
+            correctX: frameX,
+            correctY: frameY + L / 2,
 
-    const bounds = item.path.computeTightBounds();
-    const width = bounds.width;
-    const height = bounds.height;
-    const pathOffsetX = bounds.x;
-    const pathOffsetY = bounds.y;
+            path: useSharedValue(Skia.Path.Make()),
+            updatePath: (x, y) => {
+                "worklet";
+                return Skia.Path.Make()
+                    .moveTo(x, y)
+                    .lineTo(x, y + L / 2)
+                    .lineTo(x + L / 2, y + L / 2)
+                    .close();
+            },
+            contains: (px, py, x, y) => {
+                "worklet";
+                return px > x && px < x + L / 2 && py > px - x + y && py < y + L / 2;
+            },
+        },
+        {
+            id: "square",
+            color: "skyblue",
+            x: useSharedValue(frameX + L / 4),
+            y: useSharedValue(frameY + (L * 3) / 4),
+            correctX: frameX + L / 4,
+            correctY: frameY + (L * 3) / 4,
 
-    const bringToFront = () => {
-      setShapeOrder((prev) => {
-        const filtered = prev.filter((id) => id !== item.id);
-        return [...filtered, item.id];
-      });
+            path: useSharedValue(Skia.Path.Make()),
+            updatePath: (x, y) => {
+                "worklet";
+                return Skia.Path.Make()
+                    .moveTo(x, y)
+                    .lineTo(x + L / 4, y + L / 4)
+                    .lineTo(x + L / 2, y)
+                    .lineTo(x + L / 4, y - L / 4)
+                    .close();
+            },
+            contains: (px, py, x, y) => {
+                "worklet";
+                return (
+                    (px > x && px < x + L / 4 && py > -px + x + y && py < px - x + y) ||
+                    (px > x + L / 4 &&
+                        px < x + L / 2 &&
+                        py > px - x + y - L / 2 &&
+                        py < -px + x + y + L / 2)
+                );
+            },
+        },
+        {
+            id: "para",
+            color: "yellow",
+            x: useSharedValue(frameX),
+            y: useSharedValue(frameY),
+            correctX: frameX,
+            correctY: frameY,
+
+            path: useSharedValue(Skia.Path.Make()),
+            updatePath: (x, y) => {
+                "worklet";
+                return Skia.Path.Make()
+                    .moveTo(x, y)
+                    .lineTo(x, y + L / 2)
+                    .lineTo(x + L / 4, y + (L * 3) / 4)
+                    .lineTo(x + L / 4, y + L / 4)
+                    .close();
+            },
+            contains: (px, py, x, y) => {
+                "worklet";
+                return (
+                    px > x &&
+                    px < x + L / 4 &&
+                    py > px - x + y &&
+                    py < px - x + y + L / 2
+                );
+            },
+        },
+        {
+            id: "small1",
+            color: "pink",
+            x: useSharedValue(frameX + L / 4),
+            y: useSharedValue(frameY + L / 4),
+            correctX: frameX + L / 4,
+            correctY: frameY + L / 4,
+
+            path: useSharedValue(Skia.Path.Make()),
+            updatePath: (x, y) => {
+                "worklet";
+                return Skia.Path.Make()
+                    .moveTo(x, y)
+                    .lineTo(x, y + L / 2)
+                    .lineTo(x + L / 4, y + L / 4)
+                    .close();
+            },
+            contains: (px, py, x, y) => {
+                "worklet";
+                return (
+                    px > x &&
+                    px < x + L / 4 &&
+                    py > px - x + y &&
+                    py < -px + x + y + L / 2
+                );
+            },
+        },
+        {
+            id: "small2",
+            color: "lightgreen",
+            x: useSharedValue(frameX + L / 2),
+            y: useSharedValue(frameY + L),
+            correctX: frameX + L / 2,
+            correctY: frameY + L,
+
+            path: useSharedValue(Skia.Path.Make()),
+            updatePath: (x, y) => {
+                "worklet";
+                return Skia.Path.Make()
+                    .moveTo(x, y)
+                    .lineTo(x + L / 4, y - L / 4)
+                    .lineTo(x + L / 2, y)
+                    .close();
+            },
+            contains: (px, py, x, y) => {
+                "worklet";
+                return (
+                    (px > x &&
+                        px < x + L / 4 &&
+                        py > -px + x + y &&
+                        py < y) ||
+                    (px > x + L / 4 &&
+                        px < x + L / 2 &&
+                        py > px - x + y - L / 2 &&
+                        py < y)
+                );
+            },
+        },
+    ]);
+    const [activeId, setActiveId] = useState(null);
+    const [shapeOrder, setShapeOrder] = useState(shapes.current.map((s) => s.id)); // z-index 순서만 관리
+    const [isCorrectList, setIsCorrectList] = useState(shapes.current.map(() => false));
+    const player = useAudioPlayer(audioSource);
+    useEffect(() => {
+        shapes.current.forEach((shape) => {
+            const { x, y } = getRandomPosition();
+
+            shape.x.value = x;
+            shape.y.value = y;
+
+            shape.path.value = shape.updatePath(x, y);
+        });
+    }, []);
+
+    const bringToFront = (id) => {
+        setShapeOrder((prev) => {
+            const filtered = prev.filter((x) => x !== id);
+            return [...filtered, id];
+        });
     };
+
+
+    const activeShape = useSharedValue(null);
+
+    const distance = (x1, y1, x2, y2) => {
+        'worklet';
+        return Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+    };
+
+    const orderedShapes = shapeOrder
+        .map((id) => shapes.current.find((s) => s.id === id))
+        .filter(Boolean); // 혹시라도 null 방지
+
+    const playSound = () => {
+        player.seekTo(0.3);
+        player.play();
+    };
+
+    const isAllCorrect = (shape, isCorrect) => {
+        const index = shapes.current.findIndex(s => s.id === shape.id);
+        setIsCorrectList(prev => {
+            const updated = [...prev];
+            updated[index] = isCorrect;
+            if (updated.every(v => v)) {
+                alert("🎉 정답입니다!");
+                
+            }
+
+            return updated;
+        });
+
+    }
 
     const gesture = Gesture.Pan()
-      .onBegin((e) => {
-        "worklet";
-        const localX = e.absoluteX - (tx.value + pathOffsetX);
-        const localY = e.absoluteY - (ty.value + pathOffsetY);
-        const inside = item.path.contains(localX, localY);
-        if (!inside) {
-          isInside.value = false;
-          console.log("무시됨");
-          return;
-        }
-        isInside.value = true;
-        offsetX.value = tx.value;
-        offsetY.value = ty.value;
-        runOnJS(bringToFront)();
-      })
-      .onChange((e) => {
-        "worklet";
-        if (!isInside.value) return;
-        tx.value = offsetX.value + e.translationX;
-        ty.value = offsetY.value + e.translationY;
-        runOnJS(bringToFront)();
-      })
-      .onEnd(() => {
-        isInside.value = false;
-        const dx = tx.value - item.correctX;
-        const dy = ty.value - item.correctY;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < SNAP_THRESHOLD) {
-          tx.value = item.correctX;
-          ty.value = item.correctY;
-        }   
-      });
+        .onBegin((e) => {
+            for (let i = orderedShapes.length - 1; i >= 0; i--) {
+                const shape = orderedShapes[i];
+                if (shape.contains(e.x, e.y, shape.x.value, shape.y.value)) {
+                    activeShape.value = shape;
+                    runOnJS(setActiveId)(shape.id);
+                    runOnJS(bringToFront)(shape.id); // JSX 렌더 순서 변경
+                    break;
+                }
+            }
+        })
+        .onChange((e) => {
+            if (activeShape.value) {
+                const shape = activeShape.value;
+                shape.x.value += e.changeX;
+                shape.y.value += e.changeY;
+                shape.path.value = shape.updatePath(shape.x.value, shape.y.value);
+            }
+        })
+        .onEnd(() => {
+            if (activeShape.value) {
+                const shape = activeShape.value;
+                const { x, y, correctX, correctY } = shape;
+                let isCorrect = false;
+                if (distance(x.value, y.value, correctX, correctY) < SNAP_THRESHOLD) {
+                    x.value = correctX;
+                    y.value = correctY;
+                    runOnJS(playSound)();
+                    shape.path.value = shape.updatePath(correctX, correctY);
+                    isCorrect = true;
+                }
+                
+                runOnJS(isAllCorrect)(shape, isCorrect);
+                activeShape.value = null;
+                runOnJS(setActiveId)(null);
+            }
+        });
 
-    const animatedStyle = useAnimatedStyle(() => ({
-      position: "absolute",
-      top: 0,
-      left: 0,
-      width,
-      height,
-      transform: [
-        { translateX: tx.value + pathOffsetX },
-        { translateY: ty.value + pathOffsetY },
-      ],
-      backgroundColor: "rgba(255,0,0,0.0)",
-    }));
+    return (
+        <GestureHandlerRootView style={{ flex: 1 }}>
+            <GestureDetector gesture={gesture}>
+                <Canvas
+                    style={{
+                        position: "absolute",
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                    }}
+                >
+                    <PuzzleFrame />
+                    {shapeOrder.map((id) => {
+                        const shape = shapes.current.find((s) => s.id === id);
+                        const isActive = activeId === id;
 
-    const translatedPath = useDerivedValue(() => {
-      const m = Skia.Matrix();
-      m.translate(tx.value, ty.value);
-      return item.path.copy().transform(m);
-    }, [tx, ty]);
+                        return (
+                            <>
+                                {/* 도형 채우기 */}
+                                <Path path={shape.path} color={shape.color} />
 
-    return {
-      id: item.id,
-      color: item.color,
-      gesture,
-      style: animatedStyle,
-      path: translatedPath,
-    };
-  });
+                                {/* 외곽선 강조 (활성 도형일 때만) */}
+                                {isActive && (
+                                    <Path
+                                        path={shape.path}
+                                        color="black"
+                                        style="stroke"
+                                        strokeWidth={4}
+                                    />
+                                )}
+                            </>
+                        );
+                    })}
 
-  const getShapeById = (id) => shapes.find((s) => s.id === id);
-
-  return (
-    <View style={{ flex: 1 }}>
-      <GestureHandlerRootView>
-        <Canvas style={{ flex: 1 }}>
-          <Fill color="white" />
-          <PuzzleFrame />
-          {shapeOrder.map((id) => {
-            const shape = getShapeById(id);
-            return <Path key={id} path={shape.path} color={shape.color} />;
-          })}
-        </Canvas>
-
-        {shapeOrder.map((id) => {
-          const shape = getShapeById(id);
-          return (
-            <GestureDetector key={id} gesture={shape.gesture}>
-              <Animated.View style={shape.style} />
+                </Canvas>
             </GestureDetector>
-          );
-        })}
-      </GestureHandlerRootView>
-    </View>
-  );
-};
 
-export default TangramPuzzleScreen;
+        </GestureHandlerRootView>
+    );
+}

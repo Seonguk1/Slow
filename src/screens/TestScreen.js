@@ -40,7 +40,6 @@ const getRandomPosition = () => {
     return { x: randX, y: randY };
 };
 
-
 export default function TestScreen() {
     const shapes = useRef([
         {
@@ -50,6 +49,7 @@ export default function TestScreen() {
             y: useSharedValue(frameY),
             correctX: frameX,
             correctY: frameY,
+
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
                 "worklet";
@@ -74,6 +74,7 @@ export default function TestScreen() {
             y: useSharedValue(frameY + L / 2),
             correctX: frameX + L / 2,
             correctY: frameY + L / 2,
+
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
                 "worklet";
@@ -95,6 +96,7 @@ export default function TestScreen() {
             y: useSharedValue(frameY + L / 2),
             correctX: frameX,
             correctY: frameY + L / 2,
+
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
                 "worklet";
@@ -116,6 +118,7 @@ export default function TestScreen() {
             y: useSharedValue(frameY + (L * 3) / 4),
             correctX: frameX + L / 4,
             correctY: frameY + (L * 3) / 4,
+
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
                 "worklet";
@@ -144,6 +147,7 @@ export default function TestScreen() {
             y: useSharedValue(frameY),
             correctX: frameX,
             correctY: frameY,
+
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
                 "worklet";
@@ -171,6 +175,7 @@ export default function TestScreen() {
             y: useSharedValue(frameY + L / 4),
             correctX: frameX + L / 4,
             correctY: frameY + L / 4,
+
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
                 "worklet";
@@ -197,6 +202,7 @@ export default function TestScreen() {
             y: useSharedValue(frameY + L),
             correctX: frameX + L / 2,
             correctY: frameY + L,
+
             path: useSharedValue(Skia.Path.Make()),
             updatePath: (x, y) => {
                 "worklet";
@@ -223,6 +229,7 @@ export default function TestScreen() {
     ]);
     const [activeId, setActiveId] = useState(null);
     const [shapeOrder, setShapeOrder] = useState(shapes.current.map((s) => s.id)); // z-index 순서만 관리
+    const [isCorrectList, setIsCorrectList] = useState(shapes.current.map(() => false));
     const player = useAudioPlayer(audioSource);
     useEffect(() => {
         shapes.current.forEach((shape) => {
@@ -259,6 +266,22 @@ export default function TestScreen() {
         player.play();
     };
 
+    const isAllCorrect = (shape, isCorrect) => {
+        const index = shapes.current.findIndex(s => s.id === shape.id);
+        setIsCorrectList(prev => {
+            const updated = [...prev];
+            updated[index] = isCorrect;
+            console.log(updated)
+            if (updated.every(v => v)) {
+                alert("🎉 정답입니다!");
+                
+            }
+
+            return updated;
+        });
+
+    }
+
     const gesture = Gesture.Pan()
         .onBegin((e) => {
             for (let i = orderedShapes.length - 1; i >= 0; i--) {
@@ -283,14 +306,16 @@ export default function TestScreen() {
             if (activeShape.value) {
                 const shape = activeShape.value;
                 const { x, y, correctX, correctY } = shape;
-
+                let isCorrect = false;
                 if (distance(x.value, y.value, correctX, correctY) < SNAP_THRESHOLD) {
                     x.value = correctX;
                     y.value = correctY;
                     runOnJS(playSound)();
                     shape.path.value = shape.updatePath(correctX, correctY);
+                    isCorrect = true;
                 }
-
+                
+                runOnJS(isAllCorrect)(shape, isCorrect);
                 activeShape.value = null;
                 runOnJS(setActiveId)(null);
             }
